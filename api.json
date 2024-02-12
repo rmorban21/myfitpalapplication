@@ -1,0 +1,143 @@
+openapi: "3.0.0"
+info:
+title: "MyFitPal API"
+description: "API for MyFitPal application, managing user data and fitness plans."
+version: "1.0.0"
+servers:
+- url: "http://api.myfitpal.com/v1"
+description: "Main production server"
+- url: "http://staging-api.myfitpal.com"
+description: "Internal staging server for testing"
+paths:
+/users:
+get:
+summary: "Returns a list of users."
+responses:
+'200':
+description: "A list of users."
+content:
+application/json:
+schema:
+type: "array"
+items:
+$ref: "#/components/schemas/User"
+post:
+summary: "Create a new user."
+requestBody:
+required: true
+content:
+application/json:
+schema:
+$ref: "#/components/schemas/User"
+responses:
+'201':
+description: "User created successfully."
+'400':
+description: "Invalid input, object invalid."
+/users/{userId}:
+get:
+summary: "Find user by ID."
+parameters:
+- name: "userId"
+in: "path"
+required: true
+schema:
+type: "string"
+responses:
+'200':
+description: "User found."
+content:
+application/json:
+schema:
+$ref: "#/components/schemas/User"
+'404':
+description: "User not found."
+put:
+summary: "Update an existing user."
+parameters:
+- name: "userId"
+in: "path"
+required: true
+schema:
+type: "string"
+requestBody:
+required: true
+content:
+application/json:
+schema:
+$ref: "#/components/schemas/User"
+responses:
+'200':
+description: "User updated successfully."
+'400':
+description: "Invalid ID supplied."
+'404':
+description: "User not found."
+delete:
+summary: "Delete a user."
+parameters:
+- name: "userId"
+in: "path"
+required: true
+schema:
+type: "string"
+responses:
+'200':
+description: "User deleted successfully."
+'404':
+description: "User not found."
+/users/{userId}/preferences:
+put:
+summary: "Update user preferences."
+parameters:
+- name: "userId"
+in: "path"
+required: true
+schema:
+type: "string"
+requestBody:
+required: true
+content:
+application/json:
+schema:
+type: "object"
+properties:
+experienceLevel:
+type: "string"
+availability:
+type: "integer"
+format: "int32"
+fitnessGoal:
+type: "string"
+responses:
+'200':
+description: "Preferences updated successfully."
+'404':
+description: "User not found."
+components:
+schemas:
+User:
+type: "object"
+required:
+- username
+- email
+properties:
+userId:
+type: "string"
+username:
+type: "string"
+email:
+type: "string"
+preferences:
+type: "object"
+properties:
+experienceLevel:
+type: "string"
+description: "User's experience level."
+availability:
+type: "string"
+description: "User's availability for workouts in hours per week."
+fitnessGoal:
+type: "string"
+description: "User's fitness goal."
+additionalProperties: false
