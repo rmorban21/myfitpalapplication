@@ -73,5 +73,15 @@ public class UserRepository {
         User user = mapper.load(User.class, userId);
         return Optional.ofNullable(user);
     }
+    public boolean usernameExists(String username) {
+        DynamoDBQueryExpression<User> queryExpression = new DynamoDBQueryExpression<User>()
+                .withIndexName("usernameIndex")
+                .withConsistentRead(false)
+                .withKeyConditionExpression("username = :usernameVal")
+                .withExpressionAttributeValues(Map.of(":usernameVal", new AttributeValue().withS(username)))
+                .withLimit(1);
 
+        List<User> users = mapper.query(User.class, queryExpression);
+        return !users.isEmpty();
+    }
 }

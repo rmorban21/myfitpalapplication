@@ -27,16 +27,12 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        try {
-            userRepository.findUserByUsername(user.getUsername());
+        if (userRepository.usernameExists(user.getUsername())) {
             throw new UserAlreadyExistsException("Username already exists.");
-        } catch (UserNotFoundException e) {
-            log.info("Creating a new user with username: {}", user.getUsername());
-            userRepository.createUser(user);
-        } catch (Exception e) {
-            log.error("Error creating user: ", e);
-            throw e;
         }
+
+        log.info("Creating a new user with username: {}", user.getUsername());
+        userRepository.createUser(user);
     }
 
     public User findUserById(String userId) throws UserNotFoundException {
