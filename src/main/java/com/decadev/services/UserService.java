@@ -1,5 +1,6 @@
 package com.decadev.services;
 
+import com.decadev.entities.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
@@ -48,22 +49,12 @@ public class UserService {
     public void deleteUser(String userId) {
         userRepository.deleteUser(userId);
     }
- //   public void updateUserPreferences(String userId, Map<String, String> preferences) {
- //       userRepository.updateUserPreferences(userId, preferences);
- //   }
-//
- //   public Map<String, String> getUserPreferences(String userId) {
- //       return userRepository.getUserPreferences(userId);
- //   }
- //   public void storeUserCredentials(String username, String password) throws UserAlreadyExistsException {
- //       User user = User.builder()
- //               .username(username)
- //               .build();
-//
-//
- //       String encodedPassword = passwordEncoder.encode(password);
- //       user.setPassword(encodedPassword);
-//
- //       userRepository.createUser(user);
- //   }
+    public void updateGymAccess(String userId, GymAccess gymAccess) throws UserNotFoundException {
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with ID: " + userId);
+        }
+        user.setGymAccess(gymAccess);
+        userRepository.updateUser(user);
+    }
 }

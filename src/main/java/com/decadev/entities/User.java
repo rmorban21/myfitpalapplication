@@ -4,9 +4,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Data
 @Builder
 @DynamoDBTable(tableName = "MyFitPalUsers")
@@ -24,8 +21,8 @@ public class User {
     @DynamoDBAttribute(attributeName = "email")
     private String email;
 
-    @DynamoDBAttribute(attributeName = "preferences")
-    private String preferences;
+    @DynamoDBAttribute(attributeName = "gymAccess")
+    private GymAccess gymAccess;
 
     // Fitness assessment attributes
     @DynamoDBAttribute(attributeName = "fitnessGoal")
@@ -36,4 +33,11 @@ public class User {
 
     @DynamoDBAttribute(attributeName = "availability")
     private String availability;
+
+    User (String userId, String username, String password, String email) {
+        this.userId=userId;
+        this.username= username;
+        this.password=password;
+        this.email=email;
+    }
 }

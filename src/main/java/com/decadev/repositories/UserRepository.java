@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,18 +55,14 @@ public class UserRepository {
         return users.get(0);
     }
     public void updateUser(User user) {
-        User userToUpdate = user.builder()
-                .userId(user.getUserId())
-                .availability(user.getAvailability())
-                .email(user.getEmail())
-                .fitnessGoal(user.getFitnessGoal())
-                .fitnessLevel(user.getFitnessLevel())
-                .build();
-        mapper.save(userToUpdate, new DynamoDBSaveExpression()
-                .withExpectedEntry("userId", new ExpectedAttributeValue(
+        DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression()
+                .withExpected(Map.of("userId", new ExpectedAttributeValue(
                         new AttributeValue().withS(user.getUserId())
                 )));
+
+        mapper.save(user, saveExpression);
     }
+
     public void deleteUser(String userId) {
         User user = mapper.load(User.class, userId);
         mapper.delete(user);
@@ -76,16 +71,5 @@ public class UserRepository {
     public User findUserById(String userId) {
         return mapper.load(User.class, userId);
     }
- //   public void updateUserPreferences(String userId, Map<String, String> preferences) {
- //       User user = findUserById(userId);
- //       if (user != null) {
- //           user.setPreferences(preferences);
- //           updateUser(user);
- //       }
- //   }
- //   public Map<String, String> getUserPreferences(String userId) {
- //       User user = findUserById(userId);
- //       return (user != null) ? user.getPreferences() : Collections.emptyMap();
- //   }
 
 }
