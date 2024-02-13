@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.validation.constraints.NotNull;
-
 @Data
-@Builder
 @DynamoDBTable(tableName = "MyFitPalUsers")
 
 public class User {
@@ -37,12 +34,45 @@ public class User {
     @DynamoDBAttribute(attributeName = "availability")
     private String availability;
 
+    //Explicit constructor for required fields
     public User (@NonNull String userId, @NonNull String username, @NonNull String password,@NonNull String email) {
         this.userId=userId;
         this.username= username;
         this.password=password;
         this.email=email;
     }
-
+    // Default constructor for for DynamoDb
     public User(){}
+
+    //Custom builder method
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+    // Static inner class for builder
+    public static class UserBuilder {
+        private String userId;
+        private String username;
+        private String password;
+        private String email;
+        private GymAccess gymAccess;
+        private FitnessGoal fitnessGoal;
+        private FitnessLevel fitnessLevel;
+        private String availability;
+
+        UserBuilder() {}
+
+        // Builder methods for setting properties
+        public UserBuilder userId(String userId) { this.userId = userId; return this; }
+        public UserBuilder username(String username) { this.username = username; return this; }
+        // Add builder methods for all other properties
+
+        public User build() {
+            User user = new User(userId, username, password, email);
+            user.setGymAccess(gymAccess);
+            user.setFitnessGoal(fitnessGoal);
+            user.setFitnessLevel(fitnessLevel);
+            user.setAvailability(availability);
+            return user;
+        }
+    }
 }
