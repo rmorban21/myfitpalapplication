@@ -2,7 +2,9 @@ package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.ToString;
 
 @Data
 @DynamoDBTable(tableName = "MyFitPalUsers")
@@ -15,18 +17,23 @@ public class User {
     @DynamoDBIndexHashKey(attributeName = "username", globalSecondaryIndexName = "usernameIndex")
     private String username;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private String password;
 
     @DynamoDBAttribute(attributeName = "email")
     private String email;
 
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     @DynamoDBAttribute(attributeName = "gymAccess")
     private GymAccess gymAccess;
 
     // Fitness assessment attributes
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     @DynamoDBAttribute(attributeName = "fitnessGoal")
     private FitnessGoal fitnessGoal;
 
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     @DynamoDBAttribute(attributeName = "fitnessLevel")
     private FitnessLevel fitnessLevel;
 
@@ -34,7 +41,7 @@ public class User {
     private String availability;
 
     //Explicit constructor for required fields
-    public User (@NonNull String userId, @NonNull String username, @NonNull String password,@NonNull String email) {
+    public User (String userId, String username, String password, String email) {
         this.userId=userId;
         this.username= username;
         this.password=password;
