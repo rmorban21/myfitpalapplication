@@ -3,6 +3,9 @@ package com.decadev.entities;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -34,10 +37,12 @@ public class User {
     @DynamoDBAttribute(attributeName = "availability")
     private String availability;
 
-    User (String userId, String username, String password, String email) {
+    public User (@NonNull String userId, @NonNull String username, @NonNull String password,@NonNull String email) {
         this.userId=userId;
         this.username= username;
         this.password=password;
         this.email=email;
     }
+
+    public User(){}
 }
