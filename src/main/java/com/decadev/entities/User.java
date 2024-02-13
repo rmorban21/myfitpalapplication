@@ -3,7 +3,6 @@ package com.decadev.entities;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 
 @Data
@@ -47,7 +46,7 @@ public class User {
         this.password=password;
         this.email=email;
     }
-    // Default constructor for for DynamoDb
+    // Default constructor for DynamoDb
     public User(){}
 
     //Custom builder method
