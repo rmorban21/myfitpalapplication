@@ -32,7 +32,7 @@ public class User {
     private FitnessGoal fitnessGoal;
 
     @DynamoDBAttribute(attributeName = "fitnessLevel")
-    private String fitnessLevel;
+    private FitnessLevel fitnessLevel;
 
     @DynamoDBAttribute(attributeName = "availability")
     private String availability;
