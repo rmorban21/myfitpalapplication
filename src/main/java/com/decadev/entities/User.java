@@ -1,7 +1,6 @@
 package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 

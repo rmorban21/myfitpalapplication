@@ -5,17 +5,18 @@ import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
 import com.decadev.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    public static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -30,12 +31,17 @@ public class UserService {
             userRepository.findUserByUsername(user.getUsername());
             throw new UserAlreadyExistsException("Username already exists.");
         } catch (UserNotFoundException e) {
+            log.info("Creating a new user with username: {}", user.getUsername());
             userRepository.createUser(user);
+        } catch (Exception e) {
+            log.error("Error creating user: ", e);
+            throw e;
         }
     }
 
-    public User findUserById(String userId) {
-        return userRepository.findUserById(userId);
+    public User findUserById(String userId) throws UserNotFoundException {
+        return userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
     }
 
     public void updateUser(User user) {
@@ -50,10 +56,8 @@ public class UserService {
         userRepository.deleteUser(userId);
     }
     public void updateGymAccess(String userId, GymAccess gymAccess) throws UserNotFoundException {
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new UserNotFoundException("User not found with ID: " + userId);
-        }
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
         user.setGymAccess(gymAccess);
         userRepository.updateUser(user);
     }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -68,8 +69,9 @@ public class UserRepository {
         mapper.delete(user);
         System.out.println("Successfully deleted user.");
     }
-    public User findUserById(String userId) {
-        return mapper.load(User.class, userId);
+    public Optional<User> findUserById(String userId) {
+        User user = mapper.load(User.class, userId);
+        return Optional.ofNullable(user);
     }
 
 }
