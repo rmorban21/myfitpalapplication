@@ -1,5 +1,6 @@
 package com.decadev.controllers;
 
+import com.decadev.entities.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
@@ -7,10 +8,9 @@ import com.decadev.services.UserService;
 import com.decadev.utils.EmailValidator;
 import com.decadev.utils.PasswordValidator;
 import com.decadev.utils.UsernameValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -48,8 +48,12 @@ public class UserController {
 
     @GetMapping("{userId}")
     public ResponseEntity<User> getUserById(@PathVariable String userId) {
-        User user = userService.findUserById(userId);
-        return ResponseEntity.ok(user);
+        try {
+            User user = userService.findUserById(userId);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PutMapping
@@ -63,11 +67,15 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.ok("User deleted successfully");
     }
-
-//    @PutMapping("/{userId}/preferences")
-//    public ResponseEntity<String> updateUserPreferences(@PathVariable String userId,
-//                                                        @RequestBody Map<String, String> preferences) {
-//        userService.updateUserPreferences(userId, preferences);
-//        return ResponseEntity.ok("User preferences updated successfully");
-//    }
+    @PutMapping("/{userId}/gymAccess")
+    public ResponseEntity<String> updateGymAccess(@PathVariable String userId, @RequestBody GymAccess gymAccess) {
+        try {
+            userService.updateGymAccess(userId, gymAccess);
+            return ResponseEntity.ok("Gym access updated successfully");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating gym access");
+        }
+    }
 }
