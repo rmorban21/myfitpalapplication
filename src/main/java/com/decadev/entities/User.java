@@ -37,7 +37,7 @@ public class User {
     private FitnessLevel fitnessLevel;
 
     @DynamoDBAttribute(attributeName = "availability")
-    private String availability;
+    private int availability;
 
     //Explicit constructor for required fields
     public User (String userId, String username, String password, String email) {
@@ -76,7 +76,7 @@ public class User {
             user.setGymAccess(gymAccess);
             user.setFitnessGoal(fitnessGoal);
             user.setFitnessLevel(fitnessLevel);
-            user.setAvailability(availability);
+            user.setAvailability(Integer.parseInt(availability));
             return user;
         }
     }

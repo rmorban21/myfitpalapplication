@@ -19,11 +19,6 @@ public class WorkoutPlanRepository {
     private DynamoDBMapper mapper;
     private static final Logger logger = LoggerFactory.getLogger(WorkoutPlanRepository.class);
 
-    //creates a workout plan based on user info: FitnessLevel, FitnessGoal, GymAccess and availability
-    public WorkoutPlan createWorkoutPlan(User user) {
-        return new WorkoutPlan();
-    }
-
     //saves workout plan to user account
     public WorkoutPlan save(WorkoutPlan workoutPlan) {
         mapper.save(workoutPlan);
