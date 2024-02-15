@@ -23,7 +23,6 @@ public class UserRepository {
     @Autowired
     private DynamoDBMapper mapper;
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
-    private static final String TABLE_NAME = "MyFitPalUsers";
 
     public void createUser(User user) throws UserAlreadyExistsException {
         try {
