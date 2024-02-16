@@ -37,6 +37,7 @@ public class WorkoutPlanService {
         workoutPlan.setAvailability(user.getAvailability());
     }
 
+    //TODO: Confirm implementation below
     private List<Exercise> generateExercisesBasedOnGoal(User user) {
         return exerciseService.getCustomizedExercises(user);
     }
@@ -115,7 +116,7 @@ public class WorkoutPlanService {
                 .orElseGet(() -> generateAndSaveWorkoutPlan(user)); // Generate a new plan if not found
     }
 
-
+    //TODO: need to add shoulder and cardio frequency below
     private Map<String, Integer> calculateFrequencyMap(int sessionsPerWeek) {
         Map<String, Integer> frequencyMap = new HashMap<>();
         if (sessionsPerWeek >= 5) {
