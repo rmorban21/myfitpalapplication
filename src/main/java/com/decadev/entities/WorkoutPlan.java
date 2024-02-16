@@ -24,10 +24,6 @@ public class WorkoutPlan {
     @DynamoDBAttribute(attributeName = "exercises")
     private List<Exercise> exercises;
 
-    @DynamoDBTypeConverted(converter = FocusAreaExerciseMapConverter.class)
-    @DynamoDBAttribute(attributeName = "categorizedExercises")
-    private Map<String, List<Exercise>> categorizedExercises;
-
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     @DynamoDBAttribute(attributeName = "fitnessGoal")
     private FitnessGoal fitnessGoal;
@@ -42,5 +38,8 @@ public class WorkoutPlan {
 
     @DynamoDBAttribute(attributeName = "availability")
     private Integer availability;
+
+    @DynamoDBAttribute(attributeName = "generalAdvice")
+    private String generalAdvice;
 }
 

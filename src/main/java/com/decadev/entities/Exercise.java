@@ -10,7 +10,7 @@ import java.time.Duration;
 public class Exercise {
     private String name;
     private FitnessLevel fitnessLevel;
-    private String exerciseType;
+    private ExerciseType exerciseType;
     private String bodyPart;
     private String equipment;
     private Integer sets;
