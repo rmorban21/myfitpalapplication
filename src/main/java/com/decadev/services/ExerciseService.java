@@ -23,8 +23,10 @@ public class ExerciseService {
         exercises.add(new Exercise("Flutter Kicks", FitnessLevel.BEGINNER, ExerciseType.ISOLATION,"Core", "None", 3, 20, null));
         exercises.add(new Exercise("Bicycle Crunches", FitnessLevel.BEGINNER, ExerciseType.ISOLATION,"Core", "None", 3, 12, null));
 
-        //TODO: Add cardio machine exercises with durations
         // Cardio Exercises
+        exercises.add(new Exercise("StairMaster", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "StairMaster", null, null, Duration.ofMinutes(15)));
+        exercises.add(new Exercise("Low-Intensity Run", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "Treadmill", null, null, Duration.ofMinutes(30)));
+        exercises.add(new Exercise("Incline Treadmill Walk", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "Treadmill", null, null, Duration.ofMinutes(15)));
         exercises.add(new Exercise("Jump Squats", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "None", 3, 15, null));
         exercises.add(new Exercise("Burpees", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Full Body","None", 3, 10, null));
         exercises.add(new Exercise("Mountain Climbers", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Full Body","None", 3, 20, null));
@@ -119,7 +121,7 @@ public class ExerciseService {
         }
         return mixedExercises;
     }
-    //TODO: find possible implementation
+
     public List<Exercise> filterExercisesByGoal(List<Exercise> exercises, FitnessGoal goal) {
         return switch (goal) {
             case WEIGHT_LOSS -> exercises.stream().filter(e -> ExerciseType.CARDIO.equals(e.getExerciseType())).collect(Collectors.toList());
@@ -164,7 +166,6 @@ public class ExerciseService {
         return exercise;
     }
 
-    //TODO: find possible implementation
     public int calculateSessionsPerWeek(Integer availability, FitnessGoal goal) {
         int baseSessionCount = availability != null && availability >= 2 ? availability / 2 : 2;
         return switch (goal) {
@@ -174,7 +175,7 @@ public class ExerciseService {
             default -> baseSessionCount;
         };
     }
-
+    //TODO: possibility for removal if unused moving forward
     public Duration calculateSessionDuration(FitnessLevel level, int availability) {
         int baseDuration = 30; // Default duration in minutes
         int additionalMinutes = (availability - 2) * 5; // Adjusting based on availability

@@ -5,7 +5,6 @@ import com.decadev.converters.ExerciseListConverter;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @DynamoDBTable(tableName = "WorkoutPlans")

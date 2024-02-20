@@ -1,6 +1,7 @@
 package com.decadev.repositories;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -25,8 +28,16 @@ public class WorkoutPlanRepository {
     }
 
     public Optional<WorkoutPlan> findWorkoutPlanByUserId(String userId) {
-        WorkoutPlan workoutPlan = mapper.load(WorkoutPlan.class, userId);
-        return Optional.ofNullable(workoutPlan);
+        // Assuming there's a secondary index on 'userId' for direct queries
+        DynamoDBQueryExpression<WorkoutPlan> queryExpression = new DynamoDBQueryExpression<WorkoutPlan>()
+                .withIndexName("userId-index") // Use the correct index name as set up in DynamoDB
+                .withConsistentRead(false)
+                .withKeyConditionExpression("userId = :val1")
+                .withExpressionAttributeValues(Map.of(":val1", new AttributeValue().withS(userId)));
+
+        List<WorkoutPlan> result = mapper.query(WorkoutPlan.class, queryExpression);
+        // Since each user is expected to have at most one workout plan, directly return the first result if present
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     public WorkoutPlan updateWorkoutPlan(WorkoutPlan workoutPlan) {
