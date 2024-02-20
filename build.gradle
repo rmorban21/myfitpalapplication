@@ -22,7 +22,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	//DynamoDB  Dependencies
@@ -34,7 +34,7 @@ dependencies {
 	// Additional testing dependencies
 	testImplementation 'org.mockito:mockito-core:4.0.0' // For Mockito core functionality
 	testImplementation 'org.mockito:mockito-junit-jupiter:4.0.0' // For Mockito with JUnit 5 support
-
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
