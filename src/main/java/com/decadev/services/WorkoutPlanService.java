@@ -3,11 +3,12 @@ package com.decadev.services;
 import com.decadev.entities.*;
 import com.decadev.repositories.WorkoutPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class WorkoutPlanService {
     @Autowired
     private  ExerciseService  exerciseService;
@@ -169,6 +170,9 @@ public class WorkoutPlanService {
             exercise.setSets(Math.min(exercise.getSets(), 4)); // Higher volume for advanced users
             exercise.setReps(10); // Still within hypertrophy range
         }
+    }
+    public Optional<WorkoutPlan> findWorkoutPlanByUserId(String userId) {
+        return workoutPlanRepository.findWorkoutPlanByUserId(userId);
     }
 
 
