@@ -36,7 +36,7 @@ public class WorkoutPlanRepository {
                 .withExpressionAttributeValues(Map.of(":val1", new AttributeValue().withS(userId)));
 
         List<WorkoutPlan> result = mapper.query(WorkoutPlan.class, queryExpression);
-        // Since each user is expected to have at most one workout plan, directly return the first result if present
+        // Since each user is expected to have only one workout plan, directly return the first result if present
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
