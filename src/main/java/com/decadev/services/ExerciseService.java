@@ -14,85 +14,84 @@ public class ExerciseService {
 
     @PostConstruct
     public void init() {
-
         // Core Exercises
-        exercises.add(new Exercise("Plank", FitnessLevel.BEGINNER, ExerciseType.ISOLATION, "Core", "None", 3, null, Duration.ofSeconds(60)));
-        exercises.add(new Exercise("Crunches", FitnessLevel.BEGINNER, ExerciseType.ISOLATION, "Core", "None", 3, 15, null));
-        exercises.add(new Exercise("Russian Twists", FitnessLevel.BEGINNER, ExerciseType.ISOLATION,"Core", "None", 3, 12, null));
-        exercises.add(new Exercise("Leg Raises", FitnessLevel.BEGINNER, ExerciseType.ISOLATION,"Core", "None", 3, 10, null));
-        exercises.add(new Exercise("Flutter Kicks", FitnessLevel.BEGINNER, ExerciseType.ISOLATION,"Core", "None", 3, 20, null));
-        exercises.add(new Exercise("Bicycle Crunches", FitnessLevel.BEGINNER, ExerciseType.ISOLATION,"Core", "None", 3, 12, null));
+        exercises.add(Exercise.builder().name("Plank").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).duration(Duration.ofSeconds(60)).build());
+        exercises.add(Exercise.builder().name("Crunches").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(15).build());
+        exercises.add(Exercise.builder().name("Russian Twists").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Leg Raises").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Flutter Kicks").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(20).build());
+        exercises.add(Exercise.builder().name("Bicycle Crunches").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(12).build());
 
         // Cardio Exercises
-        exercises.add(new Exercise("StairMaster", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "StairMaster", null, null, Duration.ofMinutes(15)));
-        exercises.add(new Exercise("Low-Intensity Run", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "Treadmill", null, null, Duration.ofMinutes(30)));
-        exercises.add(new Exercise("Incline Treadmill Walk", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "Treadmill", null, null, Duration.ofMinutes(15)));
-        exercises.add(new Exercise("Jump Squats", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Legs", "None", 3, 15, null));
-        exercises.add(new Exercise("Burpees", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Full Body","None", 3, 10, null));
-        exercises.add(new Exercise("Mountain Climbers", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Full Body","None", 3, 20, null));
-        exercises.add(new Exercise("High Knees", FitnessLevel.BEGINNER, ExerciseType.CARDIO,  "Legs","None", 3, 30, null));
-        exercises.add(new Exercise("Jumping Jacks", FitnessLevel.BEGINNER, ExerciseType.CARDIO, "Full Body","None", 3, 30, null));
+        exercises.add(Exercise.builder().name("StairMaster").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("StairMaster").duration(Duration.ofMinutes(15)).build());
+        exercises.add(Exercise.builder().name("Low-Intensity Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("Treadmill").duration(Duration.ofMinutes(30)).build());
+        exercises.add(Exercise.builder().name("Incline Treadmill Walk").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("Treadmill").duration(Duration.ofMinutes(15)).build());
+        exercises.add(Exercise.builder().name("Jump Squats").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("None").sets(3).reps(15).build());
+        exercises.add(Exercise.builder().name("Burpees").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Full Body").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Mountain Climbers").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Full Body").equipment("None").sets(3).reps(20).build());
+        exercises.add(Exercise.builder().name("High Knees").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("None").sets(3).reps(30).build());
+        exercises.add(Exercise.builder().name("Jumping Jacks").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Full Body").equipment("None").sets(3).reps(30).build());
 
         // Upper Body Exercises (Home Gym, No Weights)
-        exercises.add(new Exercise("Push-up Variations", FitnessLevel.BEGINNER, ExerciseType.COMPOUND, "Chest", "None", 3, 12, null));
-        exercises.add(new Exercise("Chair Dips", FitnessLevel.BEGINNER, ExerciseType.ISOLATION, "Arms", "None", 3, 12, null));
-        exercises.add(new Exercise("Shoulder Taps", FitnessLevel.BEGINNER, ExerciseType.ISOLATION, "Shoulders", "None", 3, 12, null));
+        exercises.add(Exercise.builder().name("Push-up Variations").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("None").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Chair Dips").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Arms").equipment("None").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Shoulder Taps").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("None").sets(3).reps(12).build());
 
         // Lower Body Exercises (Home Gym, No Weights)
-        exercises.add(new Exercise("Walking Lunges", FitnessLevel.BEGINNER, ExerciseType.COMPOUND, "Legs", "None", 3, 10, null));
-        exercises.add(new Exercise("Lateral Lunges", FitnessLevel.BEGINNER, ExerciseType.COMPOUND,"Legs", "None", 3, 10, null));
-        exercises.add(new Exercise("Single-Leg Deadlifts", FitnessLevel.BEGINNER, ExerciseType.COMPOUND, "Legs", "None", 3, 10, null));
-        exercises.add(new Exercise("Body-weight Squats", FitnessLevel.BEGINNER, ExerciseType.COMPOUND, "Legs", "None", 3, 10, null));
-        exercises.add(new Exercise("Wall Sits", FitnessLevel.BEGINNER, ExerciseType.COMPOUND, "Legs", "None",3, null, Duration.ofSeconds(60)));
+        exercises.add(Exercise.builder().name("Walking Lunges").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Lateral Lunges").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Single-Leg Deadlifts").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Body-weight Squats").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Wall Sits").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("None").duration(Duration.ofSeconds(60)).build());
 
         // Upper Body Exercises (Home Gym, With Weights)
-        exercises.add(new Exercise("Dumbbell Shoulder Press", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Shoulders", "Dumbbells", 3, 12, null));
-        exercises.add(new Exercise("Dumbbell Bicep Curls", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Arms","Dumbbells", 3, 12, null));
-        exercises.add(new Exercise("Dumbbell Chest Flyes", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Chest","Dumbbells", 3, 12, null));
-        exercises.add(new Exercise("Dumbbell Tricep Kickbacks", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Arms", "Dumbbells", 3, 12, null));
-        exercises.add(new Exercise("Dumbbell Front Raises", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Shoulders","Dumbbells", 3, 12, null));
+        exercises.add(Exercise.builder().name("Dumbbell Shoulder Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Dumbbell Bicep Curls").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Arms").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Dumbbell Chest Flyes").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Chest").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Dumbbell Tricep Kickbacks").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Arms").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Dumbbell Front Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(12).build());
 
         // Lower Body Exercises (Home Gym, With Weights)
-        exercises.add(new Exercise("Dumbbell Deadlifts", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs", "Dumbbells", 3, 10, null));
-        exercises.add(new Exercise("Dumbbell Squats", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND,"Legs", "Dumbbells", 3, 10, null));
-        exercises.add(new Exercise("Dumbbell Lunges", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs", "Dumbbells", 3, 10, null));
+        exercises.add(Exercise.builder().name("Dumbbell Deadlifts").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Dumbbells").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Dumbbell Squats").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Dumbbells").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Dumbbell Lunges").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Dumbbells").sets(3).reps(10).build());
 
         // Leg Exercises
-        exercises.add(new Exercise("Leg Press", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs", "Leg Press Machine", 3, 12, null));
-        exercises.add(new Exercise("Leg Extension", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs", "Leg Extension Machine", 3, 12, null));
-        exercises.add(new Exercise("Leg Curl", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs","Leg Curl Machine", 3, 12, null));
-        exercises.add(new Exercise("Hack Squats", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Legs","Hack Squat Machine", 3, 12, null));
-        exercises.add(new Exercise("Back Squats", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Legs","Barbell", 3, 12, null));
-        exercises.add(new Exercise("Calf Raises", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Legs", "Calf Raise Machine", 3, 15, null));
-        exercises.add(new Exercise("Bulgarian Split Squats", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs", "None", 3, 10, null));
-        exercises.add(new Exercise("Smith Machine Squats", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Legs", "Smith Machine", 3, 12, null));
-        exercises.add(new Exercise("Walking Lunges with Dumbbells", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Legs", "Dumbbells", 3, 10, null));
-        exercises.add(new Exercise("Box Jumps", FitnessLevel.EXPERT, ExerciseType.COMPOUND, "Legs", "Box", 3, 10, null));
+        exercises.add(Exercise.builder().name("Leg Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Leg Press Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Leg Extension").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Leg Extension Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Leg Curl").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Leg Curl Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Hack Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Hack Squat Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Back Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Barbell").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Calf Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Legs").equipment("Calf Raise Machine").sets(3).reps(15).build());
+        exercises.add(Exercise.builder().name("Bulgarian Split Squats").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("None").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Smith Machine Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Smith Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Walking Lunges with Dumbbells").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Dumbbells").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Box Jumps").fitnessLevel(FitnessLevel.EXPERT).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Box").sets(3).reps(10).build());
 
         // Back Exercises
-        exercises.add(new Exercise("Lat Pulldowns", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Back", "Lat Pulldown Machine", 3, 12, null));
-        exercises.add(new Exercise("Seated Cable Rows", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Back","Seated Cable Row Machine", 3, 12, null));
-        exercises.add(new Exercise("T-Bar Rows", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Back", "T-bar machine", 3, 12, null));
-        exercises.add(new Exercise("Pull-up Variations", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Back", "Pull-up Bar or Machine", 3, 10, null));
-        exercises.add(new Exercise("Barbell Deadlifts", FitnessLevel.EXPERT, ExerciseType.COMPOUND, "Back", "Barbell", 3, 10, null));
-        exercises.add(new Exercise("Cable Face Pulls", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Back", "Cable Machine", 3, 15, null));
-        exercises.add(new Exercise("Hyperextensions", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Back", "Hyperextension Machine", 3, 12, null));
-        exercises.add(new Exercise("Single Arm Dumbbell Rows", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Back", "Dumbbells", 3, 12, null));
-        exercises.add(new Exercise("Wide Grip Pull-ups", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Back","Pull-Up Bar or Machine", 3, 10, null));
-        exercises.add(new Exercise("Bent Over Barbell Rows", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Back", "Barbell", 3, 12, null));
+        exercises.add(Exercise.builder().name("Lat Pulldowns").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Lat Pulldown Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Seated Cable Rows").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Seated Cable Row Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("T-Bar Rows").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("T-bar machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Pull-up Variations").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Pull-up Bar or Machine").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Barbell Deadlifts").fitnessLevel(FitnessLevel.EXPERT).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Barbell").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Cable Face Pulls").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Cable Machine").sets(3).reps(15).build());
+        exercises.add(Exercise.builder().name("Hyperextensions").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Hyperextension Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Single Arm Dumbbell Rows").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Wide Grip Pull-ups").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Pull-Up Bar or Machine").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Bent Over Barbell Rows").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Barbell").sets(3).reps(12).build());
 
         // Chest Exercises
-        exercises.add(new Exercise("Cable Crossovers", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Chest", "Cable Machine", 3, 12, null));
-        exercises.add(new Exercise("Incline Bench Press", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Chest", "Bench Press", 3, 10, null));
-        exercises.add(new Exercise("Decline Bench Press", FitnessLevel.EXPERT, ExerciseType.COMPOUND, "Chest","Bench Press", 3, 10, null));
-        exercises.add(new Exercise("Chest Dips", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND,"Chest", "Dip Bar", 3, 12, null));
+        exercises.add(Exercise.builder().name("Cable Crossovers").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Cable Machine").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Incline Bench Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Bench Press").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Decline Bench Press").fitnessLevel(FitnessLevel.EXPERT).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Bench Press").sets(3).reps(10).build());
+        exercises.add(Exercise.builder().name("Chest Dips").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Dip Bar").sets(3).reps(12).build());
 
-        //Shoulder Exercises
-        exercises.add(new Exercise("Standing Military Overhead Press", FitnessLevel.ADVANCED, ExerciseType.COMPOUND, "Shoulders", "Barbell", 3, 12, null));
-        exercises.add(new Exercise("Seated Shoulder Press", FitnessLevel.INTERMEDIATE, ExerciseType.COMPOUND, "Shoulders", "Dumbbells", 3, 12, null));
-        exercises.add(new Exercise("Dumbbell Lateral Raises", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Shoulders","Dumbbells", 3, 15, null));
-        exercises.add(new Exercise("Dumbbell Front Raises", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION,"Shoulders", "Dumbbells", 3, 15, null));
-        exercises.add(new Exercise("Dumbbell Rear Delt Raises", FitnessLevel.INTERMEDIATE, ExerciseType.ISOLATION, "Shoulders","Dumbbells", 3, 15, null));
+        // Shoulder Exercises
+        exercises.add(Exercise.builder().name("Standing Military Overhead Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Shoulders").equipment("Barbell").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Seated Shoulder Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Dumbbell Lateral Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
+        exercises.add(Exercise.builder().name("Dumbbell Front Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
+        exercises.add(Exercise.builder().name("Dumbbell Rear Delt Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
     }
 
     public List<Exercise> filterExercisesByBodyPart(String bodyPart, User user) {
@@ -124,26 +123,44 @@ public class ExerciseService {
 
     public List<Exercise> filterExercisesByGoal(List<Exercise> exercises, FitnessGoal goal) {
         return switch (goal) {
-            case WEIGHT_LOSS -> exercises.stream().filter(e -> ExerciseType.CARDIO.equals(e.getExerciseType())).collect(Collectors.toList());
-            case BUILD_MUSCLE -> exercises.stream().filter(e -> ExerciseType.COMPOUND.equals(e.getExerciseType())).collect(Collectors.toList());
-            case STRENGTH -> exercises.stream().filter(e -> ExerciseType.COMPOUND.equals(e.getExerciseType()) || ExerciseType.ISOLATION.equals(e.getExerciseType())).collect(Collectors.toList());
+            case WEIGHT_LOSS -> exercises.stream()
+                    .filter(e -> ExerciseType.CARDIO.equals(e.getExerciseType()) || ExerciseType.COMPOUND.equals(e.getExerciseType()))
+                    .collect(Collectors.toList());
+            case BUILD_MUSCLE, STRENGTH -> exercises.stream()
+                    .filter(e -> ExerciseType.COMPOUND.equals(e.getExerciseType()) || ExerciseType.ISOLATION.equals(e.getExerciseType()))
+                    .collect(Collectors.toList());
             default -> exercises;
         };
     }
 
-    private List<Exercise> filterExercisesByGymAccess(GymAccess gymAccess) {
+    public List<Exercise> filterExercisesByGymAccess(GymAccess gymAccess) {
+        if (gymAccess == null) {
+            return Collections.emptyList(); // or throw an IllegalArgumentException
+        }
+
         return exercises.stream()
-                .filter(exercise -> switch (gymAccess) {
-                    case HOME_GYM_NO_WEIGHTS -> "None".equalsIgnoreCase(exercise.getEquipment());
-                    case HOME_GYM_WITH_WEIGHTS -> "None".equalsIgnoreCase(exercise.getEquipment()) || "Dumbbells".equalsIgnoreCase(exercise.getEquipment()) || "Foam Roller".equalsIgnoreCase(exercise.getEquipment());
-                    case FULL_GYM_ACCESS -> true;
+                .filter(exercise -> {
+                    switch (gymAccess) {
+                        case HOME_GYM_NO_WEIGHTS:
+                            return "None".equalsIgnoreCase(exercise.getEquipment());
+                        case HOME_GYM_WITH_WEIGHTS:
+                            return "None".equalsIgnoreCase(exercise.getEquipment()) || "Dumbbells".equalsIgnoreCase(exercise.getEquipment()) || "Foam Roller".equalsIgnoreCase(exercise.getEquipment());
+                        case FULL_GYM_ACCESS:
+                            return true;
+                        default:
+                            return false; // Ensuring all paths return a value
+                    }
                 })
                 .collect(Collectors.toList());
     }
 
-    private List<Exercise> filterExercisesByFitnessLevel(List<Exercise> exercises, FitnessLevel userFitnessLevel) {
+    public List<Exercise> filterExercisesByFitnessLevel(List<Exercise> exercises, FitnessLevel userFitnessLevel) {
+        if (exercises == null || userFitnessLevel == null) {
+            return Collections.emptyList(); // or throw an IllegalArgumentException
+        }
+
         return exercises.stream()
-                .filter(exercise -> exercise.getFitnessLevel().compareTo(userFitnessLevel) <= 0)
+                .filter(exercise -> exercise != null && exercise.getFitnessLevel() != null && exercise.getFitnessLevel().compareTo(userFitnessLevel) <= 0)
                 .collect(Collectors.toList());
     }
 
@@ -155,7 +172,7 @@ public class ExerciseService {
             default -> false; // Ensuring all paths return a value
         };
     }
-    private Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
+    public Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
         if (fitnessGoal == FitnessGoal.BUILD_MUSCLE) {
             exercise.setReps(10);
         } else if (fitnessGoal == FitnessGoal.WEIGHT_LOSS) {
@@ -167,7 +184,7 @@ public class ExerciseService {
     }
 
     public int calculateSessionsPerWeek(Integer availability, FitnessGoal goal) {
-        int baseSessionCount = availability != null && availability >= 2 ? availability / 2 : 2;
+        int baseSessionCount = availability != null && availability >= 2 ? (availability + 1) / 2 : 2;
         return switch (goal) {
             case BUILD_MUSCLE -> Math.min(baseSessionCount, 5);
             case WEIGHT_LOSS -> Math.min(baseSessionCount, 4);
@@ -197,6 +214,14 @@ public class ExerciseService {
         return filterExercisesByFitnessLevel(accessibleExercises, user.getFitnessLevel()).stream()
                 .map(exercise -> customizeExerciseIntensity(exercise, user.getFitnessLevel(), user.getFitnessGoal()))
                 .collect(Collectors.toList());
+    }
+
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
     }
 
 }

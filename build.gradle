@@ -35,6 +35,11 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core:4.0.0' // For Mockito core functionality
 	testImplementation 'org.mockito:mockito-junit-jupiter:4.0.0' // For Mockito with JUnit 5 support
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
+
+
 }
 
 tasks.named('test') {
