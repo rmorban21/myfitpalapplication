@@ -1,5 +1,7 @@
 package com.decadev.controllers;
 
+import com.decadev.entities.FitnessGoal;
+import com.decadev.entities.FitnessLevel;
 import com.decadev.entities.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
@@ -80,4 +82,31 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating gym access");
         }
     }
+
+    @PutMapping("/{userId}/fitnessLevel")
+    public ResponseEntity<String> updateFitnessLevel(@PathVariable String userId, @RequestBody FitnessLevel fitnessLevel) {
+        try {
+            userService.updateFitnessLevel(userId, fitnessLevel);
+            return ResponseEntity.ok("Fitness level updated successfully");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Error updating fitness level for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating fitness level");
+        }
+    }
+
+    @PutMapping("/{userId}/fitnessGoal")
+    public ResponseEntity<String> updateFitnessGoal(@PathVariable String userId, @RequestBody FitnessGoal fitnessGoal) {
+        try {
+            userService.updateFitnessGoal(userId, fitnessGoal);
+            return ResponseEntity.ok("Fitness goal updated successfully");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Error updating fitness goal for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating fitness goal");
+        }
+    }
+
 }

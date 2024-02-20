@@ -69,7 +69,6 @@ public class WorkoutPlanService {
         int sessionsPerWeek = user.getAvailability(); // Assuming this is the number of days available for training
 
         // Allocate sessions based on muscle group frequency and recovery needs
-        // Make sure to pass both sessionsPerWeek and the specific FitnessGoal to calculateFrequencyMap
         Map<String, Integer> frequencyMap = calculateFrequencyMap(sessionsPerWeek, user.getFitnessGoal());
 
         frequencyMap.forEach((bodyPart, frequency) -> {
@@ -101,7 +100,7 @@ public class WorkoutPlanService {
                 .filter(e -> e.getExerciseType() == ExerciseType.COMPOUND)
                 .collect(Collectors.toList());
 
-        // Assume a balanced distribution of exercises for weight loss
+        // balanced distribution of exercises for weight loss
         List<Exercise> weightLossExercises = new ArrayList<>();
         weightLossExercises.addAll(cardioExercises); // Include all filtered cardio exercises
         weightLossExercises.addAll(strengthExercises); // Include all filtered strength exercises
@@ -110,7 +109,7 @@ public class WorkoutPlanService {
     }
 
     private List<Exercise> createStrengthPlan(User user) {
-        // Example: Heavy lifting days mixed with lighter, high-rep days
+        // Heavy lifting days mixed with lighter, high-rep days
         List<Exercise> plan = new ArrayList<>();
         plan.addAll(exerciseService.filterExercisesByBodyPartForStrength("Compound", user)); // Example method for compound lifts
         plan.addAll(exerciseService.filterExercisesForMixedSessions(user, 3)); // Lighter days based on availability

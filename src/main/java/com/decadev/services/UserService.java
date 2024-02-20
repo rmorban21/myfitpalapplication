@@ -1,5 +1,7 @@
 package com.decadev.services;
 
+import com.decadev.entities.FitnessGoal;
+import com.decadev.entities.FitnessLevel;
 import com.decadev.entities.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
@@ -51,10 +53,27 @@ public class UserService {
     public void deleteUser(String userId) {
         userRepository.deleteUser(userId);
     }
+
     public void updateGymAccess(String userId, GymAccess gymAccess) throws UserNotFoundException {
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
         user.setGymAccess(gymAccess);
         userRepository.updateUser(user);
     }
+
+    public void updateFitnessLevel(String userId, FitnessLevel fitnessLevel) throws UserNotFoundException {
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+        user.setFitnessLevel(fitnessLevel);
+        userRepository.updateUser(user); // This calls mapper.save(user) internally
+    }
+
+    public void updateFitnessGoal(String userId, FitnessGoal fitnessGoal) throws UserNotFoundException {
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+        user.setFitnessGoal(fitnessGoal);
+        userRepository.updateUser(user); // Uses the same save method for updates
+    }
+
+
 }
