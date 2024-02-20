@@ -171,4 +171,24 @@ class UserServiceTest {
         // Execute & Verify
         assertThrows(UserNotFoundException.class, () -> userService.updateGymAccess(userId, GymAccess.FULL_GYM_ACCESS));
     }
+
+    @Test
+    void updateFitnessGoal_UserNotFound() {
+        // Setup
+        String userId = "non-existent";
+        when(userRepository.findUserById(userId)).thenReturn(Optional.empty());
+
+        // Execute & Verify
+        assertThrows(UserNotFoundException.class, () -> userService.updateFitnessGoal(userId, FitnessGoal.STRENGTH));
+    }
+
+    @Test
+    void updateFitnessLevel_UserNotFound() {
+        // Setup
+        String userId = "non-existent";
+        when(userRepository.findUserById(userId)).thenReturn(Optional.empty());
+
+        // Execute & Verify
+        assertThrows(UserNotFoundException.class, () -> userService.updateFitnessLevel(userId, FitnessLevel.ADVANCED));
+    }
 }
