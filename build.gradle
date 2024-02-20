@@ -25,12 +25,15 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
+	//DynamoDB  Dependencies
 	// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb
 	implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.12.264'
-
-
 	// https://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb
 	implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
+
+	// Additional testing dependencies
+	testImplementation 'org.mockito:mockito-core:4.0.0' // For Mockito core functionality
+	testImplementation 'org.mockito:mockito-junit-jupiter:4.0.0' // For Mockito with JUnit 5 support
 
 }
 

@@ -26,35 +26,35 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody User user) throws UserAlreadyExistsException, UserNotFoundException {
-        // Validate username using UsernameValidator
-        if (!UsernameValidator.isValidUsername(user.getUsername())) {
-            return ResponseEntity.badRequest().body("Username must be 6-12 characters long and contain only letters and numbers.");
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
+        try {
+            if (!UsernameValidator.isValidUsername(user.getUsername()) || !EmailValidator.isValidEmail(user.getEmail()) || !PasswordValidator.isValidPassword(user.getPassword())) {
+                log.warn("Validation failed for user: {}", user);
+                return ResponseEntity.badRequest().body("Validation error. Check username, email, and password.");
+            }
+            userService.createUser(user);
+            log.info("Created a new user with username: {}", user.getUsername());
+            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
+        } catch (UserAlreadyExistsException | UserNotFoundException e) {
+            log.error("Error creating user: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error creating user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
-
-        // Validate email using EmailValidator
-        if (!EmailValidator.isValidEmail(user.getEmail())) {
-            return ResponseEntity.badRequest().body("Invalid email format.");
-        }
-
-        // Validate password using PasswordValidator
-        if (!PasswordValidator.isValidPassword(user.getPassword())) {
-            return ResponseEntity.badRequest().body("Password must consist of 6-15 characters and include uppercase, lowercase, numbers, and !$* symbols.");
-        }
-
-        userService.createUser(user);
-
-        log.info("Creating a new user with username: {}", user.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
     }
 
-    @GetMapping("{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable String userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable String userId) {
         try {
             User user = userService.findUserById(userId);
             return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            log.error("User not found: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            log.error("Unexpected error retrieving user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
 
