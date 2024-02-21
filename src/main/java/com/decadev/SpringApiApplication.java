@@ -7,7 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringApiApplication.class, args);
+		// Create an instance of SpringApplication
+		SpringApplication app = new SpringApplication(SpringApiApplication.class);
+
+		// Set additional profiles
+		app.setAdditionalProfiles("dev");
+
+		// Run the application
+		app.run(args);
 	}
 
 }
