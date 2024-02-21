@@ -37,7 +37,7 @@ public class User {
     private FitnessLevel fitnessLevel;
 
     @DynamoDBAttribute(attributeName = "availability")
-    private int availability;
+    private Integer availability;
 
     //Explicit constructor for required fields
     public User(String userId, String username, String password, String email) {
@@ -65,7 +65,7 @@ public class User {
         private GymAccess gymAccess;
         private FitnessGoal fitnessGoal;
         private FitnessLevel fitnessLevel;
-        private int availability;
+        private Integer availability;
 
         UserBuilder() {
         }
@@ -106,7 +106,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder availability(int availability) {
+        public UserBuilder availability(Integer availability) {
             this.availability = availability;
             return this;
         }

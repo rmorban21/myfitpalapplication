@@ -94,98 +94,24 @@ public class ExerciseService {
         exercises.add(Exercise.builder().name("Dumbbell Rear Delt Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
     }
 
-    public List<Exercise> filterExercisesByBodyPart(String bodyPart, User user) {
-        return exercises.stream()
-                .filter(e -> bodyPart.equalsIgnoreCase(e.getBodyPart()))
-                .filter(e -> isEquipmentAccessible(user.getGymAccess(), e.getEquipment()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Exercise> filterExercisesByBodyPartForStrength(String exerciseType, User user) {
-        return filterExercisesByBodyPart(exerciseType, user).stream()
-                .filter(e -> ExerciseType.COMPOUND == e.getExerciseType())
-                .collect(Collectors.toList());
-    }
-
-    public List<Exercise> filterExercisesByGoal(List<Exercise> exercises, FitnessGoal goal) {
-        return switch (goal) {
-            case WEIGHT_LOSS -> exercises.stream()
-                    .filter(e -> ExerciseType.CARDIO.equals(e.getExerciseType()) || ExerciseType.COMPOUND.equals(e.getExerciseType()))
-                    .collect(Collectors.toList());
-            case BUILD_MUSCLE, STRENGTH -> exercises.stream()
-                    .filter(e -> ExerciseType.COMPOUND.equals(e.getExerciseType()) || ExerciseType.ISOLATION.equals(e.getExerciseType()))
-                    .collect(Collectors.toList());
-            default -> exercises;
-        };
-    }
-
-    public List<Exercise> filterExercisesByGymAccess(GymAccess gymAccess) {
-        if (gymAccess == null) {
-            return Collections.emptyList(); // or throw an IllegalArgumentException
-        }
-
-        return exercises.stream()
-                .filter(exercise -> {
-                    switch (gymAccess) {
-                        case HOME_GYM_NO_WEIGHTS:
-                            return "None".equalsIgnoreCase(exercise.getEquipment());
-                        case HOME_GYM_WITH_WEIGHTS:
-                            return "None".equalsIgnoreCase(exercise.getEquipment()) || "Dumbbells".equalsIgnoreCase(exercise.getEquipment()) || "Foam Roller".equalsIgnoreCase(exercise.getEquipment());
-                        case FULL_GYM_ACCESS:
-                            return true;
-                        default:
-                            return false; // Ensuring all paths return a value
-                    }
-                })
-                .collect(Collectors.toList());
-    }
-
-    public List<Exercise> filterExercisesByFitnessLevel(List<Exercise> exercises, FitnessLevel userFitnessLevel) {
-        if (exercises == null || userFitnessLevel == null) {
-            return Collections.emptyList(); // or throw an IllegalArgumentException
-        }
-
-        return exercises.stream()
-                .filter(exercise -> exercise != null && exercise.getFitnessLevel() != null && exercise.getFitnessLevel().compareTo(userFitnessLevel) <= 0)
-                .collect(Collectors.toList());
-    }
-
-    public List<List<Exercise>> filterExercisesForLimitedAvailability(User user) {
-        if (user.getAvailability() < 2) {
-            // Filter exercises based on gym access and fitness level
-            List<Exercise> accessibleExercises = filterExercisesByGymAccess(user.getGymAccess());
-            List<Exercise> levelSuitableExercises = filterExercisesByFitnessLevel(accessibleExercises, user.getFitnessLevel());
-
-            // Further filter by the user's fitness goal
-            List<Exercise> goalSuitableExercises = filterExercisesByGoal(levelSuitableExercises, user.getFitnessGoal()).stream()
-                    .filter(exercise -> ExerciseType.COMPOUND.equals(exercise.getExerciseType())) // Focusing on compound exercises
-                    .collect(Collectors.toList());
-
-            // Split into 4 sessions, assuming each session contains a subset of the filtered exercises
-            List<List<Exercise>> sessions = new ArrayList<>();
-            int exercisesPerSession = Math.max(1, goalSuitableExercises.size() / 4); // Ensure at least one exercise per session
-            for (int i = 0; i < 4; i++) {
-                int start = i * exercisesPerSession;
-                int end = Math.min((i + 1) * exercisesPerSession, goalSuitableExercises.size());
-                if (start < end) { // Ensure there are exercises to add
-                    sessions.add(new ArrayList<>(goalSuitableExercises.subList(start, end)));
-                }
-            }
-            return sessions;
-        } else {
-            // If the user has more than 2 hours per week, consider a different approach or return an empty list
-            return Collections.emptyList();
-        }
-    }
 
     public boolean isEquipmentAccessible(GymAccess gymAccess, String equipment) {
-        return switch (gymAccess) {
-            case HOME_GYM_NO_WEIGHTS -> "None".equalsIgnoreCase(equipment);
-            case HOME_GYM_WITH_WEIGHTS -> !"Full gym access".equalsIgnoreCase(equipment);
-            case FULL_GYM_ACCESS -> true;
-            default -> false; // Ensuring all paths return a value
-        };
+        if (gymAccess == null || equipment == null) {
+            return false;
+        }
+
+        switch (gymAccess) {
+            case HOME_GYM_NO_WEIGHTS:
+                return "None".equalsIgnoreCase(equipment);
+            case HOME_GYM_WITH_WEIGHTS:
+                return "None".equalsIgnoreCase(equipment) || "Dumbbells".equalsIgnoreCase(equipment) || "Foam Roller".equalsIgnoreCase(equipment);
+            case FULL_GYM_ACCESS:
+                return true;
+            default:
+                return false; // Ensuring all paths return a value
+        }
     }
+
     public Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
         if (fitnessGoal == FitnessGoal.BUILD_MUSCLE) {
             exercise.setReps(10);
@@ -197,15 +123,6 @@ public class ExerciseService {
         return exercise;
     }
 
-    public int calculateSessionsPerWeek(Integer availability, FitnessGoal goal) {
-        int baseSessionCount = availability != null && availability >= 2 ? (availability + 1) / 2 : 2;
-        return switch (goal) {
-            case BUILD_MUSCLE -> Math.min(baseSessionCount, 5);
-            case WEIGHT_LOSS -> Math.min(baseSessionCount, 4);
-            case STRENGTH -> Math.min(baseSessionCount, 3);
-            default -> baseSessionCount;
-        };
-    }
 
     private int getRepsForStrengthGoal(FitnessLevel fitnessLevel) {
         return switch (fitnessLevel) {
@@ -214,67 +131,8 @@ public class ExerciseService {
         };
     }
 
-    public List<Exercise> getCustomizedExercises(User user) {
-        List<Exercise> accessibleExercises = filterExercisesByGymAccess(user.getGymAccess());
-        return filterExercisesByFitnessLevel(accessibleExercises, user.getFitnessLevel()).stream()
-                .map(exercise -> customizeExerciseIntensity(exercise, user.getFitnessLevel(), user.getFitnessGoal()))
-                .collect(Collectors.toList());
-    }
-
-    //generate focused sessions for limited availability
-    public List<List<Exercise>> generateFocusedSessions(User user) {
-        // Check if the user's availability is below the minimum required for a comprehensive plan
-        if (user.getAvailability() < 2) {
-            // TODO: Ideally, this check should be performed before calling this method
-            throw new IllegalArgumentException("Availability is below the minimum required threshold.");
-        }
-
-        List<Exercise> customizedExercises = getCustomizedExercises(user);
-        // Assuming the user's fitness goal has already been considered in getCustomizedExercises
-
-        // Example focuses based on common fitness goals
-        List<String> focusAreas = determineFocusAreasBasedOnGoal(user.getFitnessGoal());
-
-        Map<String, List<Exercise>> exercisesByFocus = new HashMap<>();
-        for (String focus : focusAreas) {
-            exercisesByFocus.put(focus, new ArrayList<>());
-        }
-
-        // Distribute exercises into the focus areas
-        for (Exercise exercise : customizedExercises) {
-            for (String focus : focusAreas) {
-                if (exercise.getBodyPart().equalsIgnoreCase(focus)) {
-                    exercisesByFocus.get(focus).add(exercise);
-                }
-            }
-        }
-
-        // Organize exercises into sessions
-        List<List<Exercise>> focusedSessions = new ArrayList<>();
-        for (String focus : focusAreas) {
-            List<Exercise> focusExercises = exercisesByFocus.get(focus);
-            if (!focusExercises.isEmpty()) {
-                // Here you could further split or organize exercises based on total session time, intensity, etc.
-                focusedSessions.add(focusExercises);
-            }
-        }
-
-        return focusedSessions;
-    }
-
-    //determine focus area based on specific goal
-    private List<String> determineFocusAreasBasedOnGoal(FitnessGoal goal) {
-        // return a list of focus areas (body parts or exercise types) based on the user's fitness goal
-        switch (goal) {
-            case WEIGHT_LOSS:
-                return Arrays.asList("Cardio", "Legs", "Core", "Full Body");
-            case BUILD_MUSCLE:
-                return Arrays.asList("Legs", "Back", "Chest", "Arms", "Shoulders");
-            case STRENGTH:
-                return Arrays.asList("Compound Movements", "Legs", "Back", "Chest");
-            default:
-                return Collections.emptyList();
-        }
+    public List<Exercise> getAllExercises() {
+        return new ArrayList<>(exercises); // Return a copy of the static list
     }
 
     public List<Exercise> getExercises() {

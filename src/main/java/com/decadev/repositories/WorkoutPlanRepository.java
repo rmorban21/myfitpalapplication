@@ -28,7 +28,7 @@ public class WorkoutPlanRepository {
     }
 
     public Optional<WorkoutPlan> findWorkoutPlanByUserId(String userId) {
-        // Assuming there's a secondary index on 'userId' for direct queries
+        // secondary index on 'userId' for direct queries
         DynamoDBQueryExpression<WorkoutPlan> queryExpression = new DynamoDBQueryExpression<WorkoutPlan>()
                 .withIndexName("userId-index") // Use the correct index name as set up in DynamoDB
                 .withConsistentRead(false)

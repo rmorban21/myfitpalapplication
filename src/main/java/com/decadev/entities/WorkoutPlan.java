@@ -1,7 +1,6 @@
 package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.decadev.converters.ExerciseListConverter;
 import lombok.Data;
 
 import java.util.List;
@@ -16,12 +15,8 @@ public class WorkoutPlan {
     @DynamoDBAttribute(attributeName = "userId")
     private String userId;
 
-    @DynamoDBAttribute(attributeName = "workoutSession")
-    private List<WorkoutSession> workoutSessions;
-
-    @DynamoDBTypeConverted(converter = ExerciseListConverter.class)
-    @DynamoDBAttribute(attributeName = "exercises")
-    private List<Exercise> exercises;
+    @DynamoDBAttribute(attributeName = "workoutSessions")
+    private List<WorkoutSession> workoutSessions; // Modify to include sessions
 
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     @DynamoDBAttribute(attributeName = "fitnessGoal")

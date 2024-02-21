@@ -14,20 +14,20 @@ public class WorkoutPlanService {
     private  ExerciseService  exerciseService;
     @Autowired
     private WorkoutPlanRepository workoutPlanRepository;
+    @Autowired
+    private WorkoutSessionService workoutSessionService;
 
     private static final String GENERAL_ADVICE = "Remember to stretch before and after your workout...";
-
-    //TODO: Need to establish logic for populating specific day focus based on fitness goal
-    // (example: Day 1: Back and Shoulders for buildmuscle or strength goals or Day 1: Upper Body for weight loss)
 
     public WorkoutPlan generateAndSaveWorkoutPlan(User user) {
         WorkoutPlan workoutPlan = new WorkoutPlan();
         setWorkoutPlanDetails(workoutPlan, user);
-        workoutPlan.setExercises(generateExercisesBasedOnGoal(user));
+        workoutPlan.setWorkoutSessions(generateWorkoutSessionsBasedOnGoal(user));
         workoutPlan.setGeneralAdvice(generateGeneralAdvice());
 
         return workoutPlanRepository.save(workoutPlan);
     }
+
 
     private void setWorkoutPlanDetails(WorkoutPlan workoutPlan, User user) {
         workoutPlan.setUserId(user.getUserId());
@@ -37,23 +37,19 @@ public class WorkoutPlanService {
         workoutPlan.setAvailability(user.getAvailability());
     }
 
-    private List<Exercise> generateExercisesBasedOnGoal(User user) {
-        List<Exercise> filteredExercises = exerciseService.filterExercisesByGoal(exerciseService.getCustomizedExercises(user), user.getFitnessGoal());
-        int sessionsPerWeek = exerciseService.calculateSessionsPerWeek(user.getAvailability(), user.getFitnessGoal());
-        Map<String, Integer> frequencyMap = calculateFrequencyMap(sessionsPerWeek, user.getFitnessGoal());
+    public List<WorkoutSession> generateWorkoutSessionsBasedOnGoal(User user) {
+        List<WorkoutSession> workoutSessions = new ArrayList<>();
+        int sessionsPerWeek = workoutSessionService.calculateSessionsPerWeek(user.getAvailability(), user.getFitnessGoal());
 
-        // Allocate exercises based on frequency map, ensuring balanced workout plans
-        List<Exercise> planExercises = new ArrayList<>();
-        frequencyMap.forEach((bodyPart, frequency) -> {
-            List<Exercise> bodyPartExercises = filteredExercises.stream()
-                    .filter(exercise -> exercise.getBodyPart().equalsIgnoreCase(bodyPart))
-                    .limit(frequency)
-                    .collect(Collectors.toList());
-            planExercises.addAll(bodyPartExercises);
-        });
+        // Generate sessions based on the user's fitness goal
+        for (int i = 0; i < sessionsPerWeek; i++) {
+            WorkoutSession workoutSession = workoutSessionService.generateWorkoutSession(user);
+            workoutSessions.add(workoutSession);
+        }
 
-        return planExercises;
+        return workoutSessions;
     }
+
 
     private String generateGeneralAdvice() {
         return "Remember to stretch before and after your workout for at least 5 minutes. " +
@@ -68,12 +64,20 @@ public class WorkoutPlanService {
         List<Exercise> plan = new ArrayList<>();
         int sessionsPerWeek = user.getAvailability(); // Assuming this is the number of days available for training
 
+        // Get all exercises from the ExerciseService
+        List<Exercise> allExercises = exerciseService.getAllExercises();
+
         // Allocate sessions based on muscle group frequency and recovery needs
         Map<String, Integer> frequencyMap = calculateFrequencyMap(sessionsPerWeek, user.getFitnessGoal());
 
         frequencyMap.forEach((bodyPart, frequency) -> {
+            // Filter exercises by body part
+            List<Exercise> bodyPartExercises = workoutSessionService.filterExercisesByBodyPart(Collections.singletonList(bodyPart),
+                    allExercises, user.getGymAccess());
+
+            // Add the filtered exercises to the plan
             for (int i = 0; i < frequency; i++) {
-                plan.addAll(exerciseService.filterExercisesByBodyPart(bodyPart, user));
+                plan.addAll(bodyPartExercises);
             }
         });
 
@@ -85,10 +89,9 @@ public class WorkoutPlanService {
 
         return plan;
     }
-
     private List<Exercise> createWeightLossPlan(User user) {
         // Fetch all exercises first, then filter based on the type within this method
-        List<Exercise> allExercises = exerciseService.getCustomizedExercises(user);
+        List<Exercise> allExercises = workoutSessionService.getCustomizedExercises(user);
 
         // Filter for Cardio exercises
         List<Exercise> cardioExercises = allExercises.stream()
@@ -108,11 +111,13 @@ public class WorkoutPlanService {
         return weightLossExercises;
     }
 
+    //TODO: may need to create filterExercisesByBodyPartForStrength method
     private List<Exercise> createStrengthPlan(User user) {
         // Heavy lifting days mixed with lighter, high-rep days
-        List<Exercise> plan = new ArrayList<>();
-        plan.addAll(exerciseService.filterExercisesByBodyPartForStrength("Compound", user)); // Example method for compound lifts
-        return plan;
+        List<String> bodyPartsForStrength = Arrays.asList("Legs", "Chest", "Back", "Shoulders");
+        GymAccess gymAccess = user.getGymAccess();
+
+        return workoutSessionService.filterExercisesByBodyPartForStrength(bodyPartsForStrength, exerciseService.getExercises(), gymAccess);
     }
 
 
@@ -137,7 +142,7 @@ public class WorkoutPlanService {
             put("Chest", 1);
             put("Arms", 1);
             put("Core", 1);
-            put("Shoulders", 1); // Ensure shoulders are included for a balanced approach
+            put("Shoulders", 1);
         }};
 
         if (goal == FitnessGoal.BUILD_MUSCLE && sessionsPerWeek >= 5) {
