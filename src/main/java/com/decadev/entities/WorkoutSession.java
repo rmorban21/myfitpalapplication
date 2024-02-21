@@ -30,3 +30,5 @@ public class WorkoutSession {
 
     public WorkoutSession (String sessionId, Day day, List<Exercise> exercises){}
 }
+// TODO: Validate the data integrity and consistency between WorkoutPlan and WorkoutSession,
+//  especially when updates or deletions occur.

@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ExerciseService {
     private List<Exercise> exercises = new ArrayList<>();
 
+    //TODO: possibility for additional exercises for broader range
+    //TODO: Review of integration with WorkoutPlan and WorkoutSession via API endpoints that fetch exercises
+    // based on specific criteria
     @PostConstruct
     public void init() {
         // Core Exercises

@@ -19,15 +19,48 @@ public class WorkoutPlanService {
 
     private static final String GENERAL_ADVICE = "Remember to stretch before and after your workout...";
 
+    //TODO: Consider exceptions to add - possible improvements to personalization
+    private List<String> generateWorkoutSessionsAndReturnIds(User user, int sessionsCount) {
+        List<String> sessionIds = new ArrayList<>();
+        for (int i = 0; i < sessionsCount; i++) {
+            WorkoutSession session = workoutSessionService.generateWorkoutSession(user);
+            // Assuming generateWorkoutSession now saves the session and returns the session with its ID
+            sessionIds.add(session.getSessionId());
+        }
+        return sessionIds;
+    }
+
+    public List<WorkoutSession> getWorkoutSessionsForPlan(String planId) {
+        WorkoutPlan workoutPlan = workoutPlanRepository.findWorkoutPlanByUserId(planId)
+                .orElseThrow(() -> new IllegalArgumentException("Workout plan not found"));
+        return workoutPlan.getWorkoutSessionIds().stream()
+                .map(sessionId -> workoutSessionService.findWorkoutSessionById(sessionId)
+                        .orElseThrow(() -> new IllegalArgumentException("Workout session not found")))
+                .collect(Collectors.toList());
+    }
+
     public WorkoutPlan generateAndSaveWorkoutPlan(User user) {
         WorkoutPlan workoutPlan = new WorkoutPlan();
         setWorkoutPlanDetails(workoutPlan, user);
-        workoutPlan.setWorkoutSessions(generateWorkoutSessionsBasedOnGoal(user));
+
+        int sessionsCount = workoutSessionService.calculateSessionsPerWeek(user.getAvailability(), user.getFitnessGoal());
+        List<String> sessionIds = generateWorkoutSessionsAndReturnIds(user, sessionsCount);
+
+        workoutPlan.setWorkoutSessionIds(sessionIds);
         workoutPlan.setGeneralAdvice(generateGeneralAdvice());
 
         return workoutPlanRepository.save(workoutPlan);
     }
 
+    private List<WorkoutSession> generateWorkoutSessionsBasedOnGoalAndAvailability(User user, int sessionsCount) {
+        List<WorkoutSession> workoutSessions = new ArrayList<>();
+        // Adjust your existing logic here to generate the correct number of sessions based on sessionsCount
+        for (int i = 0; i < sessionsCount; i++) {
+            WorkoutSession session = workoutSessionService.generateWorkoutSession(user);
+            workoutSessions.add(session);
+        }
+        return workoutSessions;
+    }
 
     private void setWorkoutPlanDetails(WorkoutPlan workoutPlan, User user) {
         workoutPlan.setUserId(user.getUserId());
@@ -111,7 +144,6 @@ public class WorkoutPlanService {
         return weightLossExercises;
     }
 
-    //TODO: may need to create filterExercisesByBodyPartForStrength method
     private List<Exercise> createStrengthPlan(User user) {
         // Heavy lifting days mixed with lighter, high-rep days
         List<String> bodyPartsForStrength = Arrays.asList("Legs", "Chest", "Back", "Shoulders");

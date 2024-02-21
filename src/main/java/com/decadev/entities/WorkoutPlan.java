@@ -15,8 +15,8 @@ public class WorkoutPlan {
     @DynamoDBAttribute(attributeName = "userId")
     private String userId;
 
-    @DynamoDBAttribute(attributeName = "workoutSessions")
-    private List<WorkoutSession> workoutSessions; // Modify to include sessions
+    @DynamoDBAttribute(attributeName = "workoutSessionIds")
+    private List<String> workoutSessionIds;
 
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     @DynamoDBAttribute(attributeName = "fitnessGoal")
@@ -36,4 +36,4 @@ public class WorkoutPlan {
     @DynamoDBAttribute(attributeName = "generalAdvice")
     private String generalAdvice;
 }
-
+//TODO: Consider additional exceptions to create for WorkoutPlan endpoint

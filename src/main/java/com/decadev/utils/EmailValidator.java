@@ -13,3 +13,5 @@ public class EmailValidator {
         return email != null && pattern.matcher(email).matches();
     }
 }
+//TODO: Consider integrating Spring's built-in validation framework for a more standardized approach to validation,
+// which can also automatically handle many common validation scenarios.

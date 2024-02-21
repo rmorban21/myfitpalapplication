@@ -25,6 +25,9 @@ public class Exercise {
         return new ExerciseBuilder();
     }
 
+    //TODO: Consider adding validation in the builder's build method to ensure that
+    // all required fields are set and valid.
+
     // ExerciseBuilder class to construct Exercise objects
     public static class ExerciseBuilder {
         private final Exercise exercise;

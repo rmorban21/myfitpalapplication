@@ -6,7 +6,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
-
+//TODO: Consider logging the exception details to aid in debugging
+// any potential issues with the conversion process.
 public class ExerciseListConverter implements DynamoDBTypeConverter<String, List<Exercise>> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

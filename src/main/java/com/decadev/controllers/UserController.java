@@ -27,6 +27,8 @@ public class UserController {
         this.userService = userService;
     }
 
+    //TODO: Add more comprehensive validation feedback to the client. Instead of a generic "Validation error,"
+    // specify which field(s) failed validation.
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
         try {

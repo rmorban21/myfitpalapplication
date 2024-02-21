@@ -25,6 +25,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    //TODO: Ensure that all user inputs are validated before processing to prevent injection attacks or storing invalid data.
     public void createUser(User user) throws UserAlreadyExistsException, UserNotFoundException {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
@@ -42,6 +43,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
     }
 
+    //TODO: Add detailed validation for all fields that can be updated.
     public void updateUser(User user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -54,6 +56,7 @@ public class UserService {
         userRepository.deleteUser(userId);
     }
 
+    // TODO: Consider implementing a general approach to handling partial updates to reduce redundancy for below methods
     public void updateGymAccess(String userId, GymAccess gymAccess) throws UserNotFoundException {
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));

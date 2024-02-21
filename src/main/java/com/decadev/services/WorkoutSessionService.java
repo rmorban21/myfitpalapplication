@@ -20,6 +20,7 @@ public class WorkoutSessionService {
         this.workoutSessionRepository = workoutSessionRepository;
         this.exerciseService = exerciseService;
     }
+    // TODO: Consider additional error handling here
 
     public WorkoutSession generateWorkoutSession(User user) {
         // Determine the workout day based on the user's fitness goal

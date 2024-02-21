@@ -27,4 +27,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/dogs").permitAll().antMatchers("/api/users/**").permitAll();
     }
 }
-
+// TODO: Review logging levels and ensure sensitive information is not logged,
+//  such as passwords or personal user data.

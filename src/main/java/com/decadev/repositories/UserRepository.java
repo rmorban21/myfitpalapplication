@@ -24,6 +24,7 @@ public class UserRepository {
     private DynamoDBMapper mapper;
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
+    // TODO: Research DynamoDB's conditional write features to atomically check-and-create to prevent duplicates.
     public void createUser(User user) throws UserAlreadyExistsException {
         try {
             if (findUserByUsername(user.getUsername()) != null) {

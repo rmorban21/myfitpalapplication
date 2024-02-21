@@ -48,11 +48,15 @@ public class WorkoutPlanRepository {
         return workoutPlan;
     }
 
+    //TODO: For the deleteByUserId method in WorkoutPlanRepository,
+    // consider adding transactional integrity checks or handling potential cascading effects
     public void deleteByUserId(String userId) {
-        WorkoutPlan workoutPlan = mapper.load(WorkoutPlan.class, userId);
-        if (workoutPlan != null) {
-            mapper.delete(workoutPlan);
-        }
+        Optional<WorkoutPlan> optionalWorkoutPlan = findWorkoutPlanByUserId(userId);
+        optionalWorkoutPlan.ifPresent(plan -> {
+            // If associated sessions or other entities need to be deleted, handle them here
+            mapper.delete(plan);
+            logger.info("Deleted workout plan for userId: {}", userId);
+        });
     }
 }
 

@@ -1,6 +1,7 @@
 package com.decadev.entities;
 
-
+//TODO: For Day, the comments suggest different sets of days for different fitness goals.
+// Ensure that the application logic correctly handles these variations when generating workout plans.
 public enum Day {
     // First 4 are for build_muscle and strength goals - build muscle will have isolation exercises while strength will consist of only compound movements and possibly exclude arms
     // Second set is for weight loss goal

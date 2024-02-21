@@ -1,12 +1,10 @@
 package com.decadev.repositories;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.decadev.entities.WorkoutSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -30,6 +28,8 @@ public class WorkoutSessionRepository {
         return workoutSession;
     }
 
+    //TODO: For the deleteById method, consider adding transactional integrity checks
+    //  or handling potential cascading effects
     public void deleteById(String sessionId) {
         WorkoutSession workoutSession = findById(sessionId).orElseThrow(() -> new IllegalArgumentException("Workout session not found"));
         dynamoDBMapper.delete(workoutSession);

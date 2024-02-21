@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//TODO: Consider security- authentication and authorixation to protect endpoints
+// (ie: users should only be able to access their own workoutplans not others')
 @RestController
 @RequestMapping("/api/workout-plans")
 public class WorkoutPlanController {
-
     @Autowired
     private WorkoutPlanService workoutPlanService;
 
