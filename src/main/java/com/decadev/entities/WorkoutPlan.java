@@ -16,8 +16,8 @@ public class WorkoutPlan {
     @DynamoDBAttribute(attributeName = "userId")
     private String userId;
 
-    @DynamoDBAttribute(attributeName = "Day")
-    private String day;
+    @DynamoDBAttribute(attributeName = "workoutSession")
+    private List<WorkoutSession> workoutSessions;
 
     @DynamoDBTypeConverted(converter = ExerciseListConverter.class)
     @DynamoDBAttribute(attributeName = "exercises")

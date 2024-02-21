@@ -28,6 +28,7 @@ class ExerciseServiceTest {
     @InjectMocks
     private ExerciseService exerciseService;
 
+
     @BeforeEach
     void setUp() {
         // Directly call init to populate the exercises for testing
@@ -35,6 +36,16 @@ class ExerciseServiceTest {
         System.out.println("Number of exercises: " + exerciseService.getExercises().size());
         // Print out details of each exercise
         exerciseService.getExercises().forEach(System.out::println);
+        User user = User.builder()
+                .userId("sampleUserId")
+                .username("sampleUsername")
+                .email("sample@example.com")
+                .gymAccess(GymAccess.FULL_GYM_ACCESS)
+                .fitnessLevel(FitnessLevel.BEGINNER)
+                .fitnessGoal(FitnessGoal.WEIGHT_LOSS)
+                .availability(5)
+                .build();
+        user.setPassword("samplePassword");
     }
 
 
@@ -69,6 +80,7 @@ class ExerciseServiceTest {
         assertThat(filteredExercises)
                 .extracting(Exercise::getBodyPart)
                 .containsOnly(bodyPart);
+        System.out.println(filteredExercises);
     }
 
     @ParameterizedTest
@@ -100,15 +112,6 @@ class ExerciseServiceTest {
         assertTrue(customizedExercise.getReps() >= 10 && customizedExercise.getReps() <= 15);
     }
 
-    @Test
-    void whenFilteringForMixedSessions_thenCorrectNumberOfExercisesAreReturned() {
-        User user = new User();
-        user.setGymAccess(GymAccess.FULL_GYM_ACCESS);
-        int sessions = 3;
-        List<Exercise> exercises = exerciseService.filterExercisesForMixedSessions(user, sessions);
-        // Assuming 2 exercises per session
-        assertEquals(6, exercises.size());
-    }
     @Test
     void whenCalculatingSessionsPerWeek_withAvailability_thenReturnsCorrectSessionCount() {
         int sessions = exerciseService.calculateSessionsPerWeek(3, FitnessGoal.BUILD_MUSCLE);

@@ -17,6 +17,8 @@ public class WorkoutPlanService {
 
     private static final String GENERAL_ADVICE = "Remember to stretch before and after your workout...";
 
+    //TODO: Need to establish logic for populating specific day focus based on fitness goal
+    // (example: Day 1: Back and Shoulders for buildmuscle or strength goals or Day 1: Upper Body for weight loss)
 
     public WorkoutPlan generateAndSaveWorkoutPlan(User user) {
         WorkoutPlan workoutPlan = new WorkoutPlan();
@@ -52,8 +54,6 @@ public class WorkoutPlanService {
 
         return planExercises;
     }
-
-    // Implement other methods like createOrUpdateWorkoutPlan, updateUserWorkoutPlan, etc., following similar patterns
 
     private String generateGeneralAdvice() {
         return "Remember to stretch before and after your workout for at least 5 minutes. " +
@@ -112,7 +112,6 @@ public class WorkoutPlanService {
         // Heavy lifting days mixed with lighter, high-rep days
         List<Exercise> plan = new ArrayList<>();
         plan.addAll(exerciseService.filterExercisesByBodyPartForStrength("Compound", user)); // Example method for compound lifts
-        plan.addAll(exerciseService.filterExercisesForMixedSessions(user, 3)); // Lighter days based on availability
         return plan;
     }
 
