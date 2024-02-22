@@ -37,40 +37,35 @@ public class WorkoutSessionService {
      */
     public List<WorkoutSession> generateWorkoutSessions(User user) {
         List<WorkoutSession> sessions = new ArrayList<>();
-        int sessionsCount = calculateSessionsPerWeek(user.getAvailability(), user.getFitnessGoal());
+        int sessionsCount = calculateSessionsPerWeek(user.getAvailability());
 
         for (int i = 0; i < sessionsCount; i++) {
             Day day = determineWorkoutDay(user.getFitnessGoal(), i);
-            // Use the new method to get customized exercises
             List<Exercise> sessionExercises = exerciseService.getCustomizedExercisesForUser(user.getGymAccess(), user.getFitnessLevel(), user.getFitnessGoal());
-            Duration sessionDuration = determineSessionDuration(user.getFitnessLevel(), user.getAvailability());
 
             WorkoutSession session = new WorkoutSession();
             session.setUserId(user.getUserId());
             session.setDay(day);
-            session.setExercises(sessionExercises); // Now getting a tailored set of exercises
-            session.setSessionDuration(sessionDuration);
+            session.setExercises(sessionExercises);
+            session.setSessionDuration(Duration.ofHours(1)); // Now assuming each session lasts 1 hour
 
-            // Assume workoutSessionRepository.save(session) is correctly implemented
-            sessions.add(session);
+            sessions.add(session); // Assuming workoutSessionRepository.save(session) correctly persists the session
         }
 
         return sessions;
     }
     /**
-     * Calculates the number of sessions per week based on user availability and fitness goals.
+     * Calculates the number of sessions per week based on user availability. The minimum availability is 2 hours per week.
      * @param availability the user's availability in hours per week
-     * @param goal the user's fitness goal
      * @return the calculated number of sessions per week
      */
-    public int calculateSessionsPerWeek(Integer availability, FitnessGoal goal) {
-        int baseSessionCount = Math.max(2, availability / 2); // Ensures a minimum of 2 sessions
-        return switch (goal) {
-            case BUILD_MUSCLE -> Math.min(baseSessionCount, 5);
-            case WEIGHT_LOSS -> Math.min(baseSessionCount, 4);
-            case STRENGTH -> Math.min(baseSessionCount, 3);
-            default -> baseSessionCount;
-        };
+    public int calculateSessionsPerWeek(Integer availability) {
+        // Ensure there's a default minimum availability
+        int safeAvailability = (availability != null) ? Math.max(availability, 2) : 2;
+
+        // Since each session is 1 hour, the number of sessions is directly equal to the available hours
+        // Ensuring at least the minimum required sessions based on the application's usage policy
+        return Math.max(safeAvailability, 2);
     }
 
     /**
