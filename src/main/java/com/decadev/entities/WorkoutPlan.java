@@ -1,6 +1,9 @@
 package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.decadev.converters.FitnessGoalConverter;
+import com.decadev.converters.FitnessLevelConverter;
+import com.decadev.converters.GymAccessConverter;
 import lombok.Data;
 
 import java.util.List;
@@ -18,15 +21,15 @@ public class WorkoutPlan {
     @DynamoDBAttribute(attributeName = "workoutSessionIds")
     private List<String> workoutSessionIds;
 
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
+    @DynamoDBTypeConverted(converter = FitnessGoalConverter.class)
     @DynamoDBAttribute(attributeName = "fitnessGoal")
     private FitnessGoal fitnessGoal;
 
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
+    @DynamoDBTypeConverted(converter = FitnessLevelConverter.class)
     @DynamoDBAttribute(attributeName = "fitnessLevel")
     private FitnessLevel fitnessLevel;
 
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
+    @DynamoDBTypeConverted(converter = GymAccessConverter.class)
     @DynamoDBAttribute(attributeName = "gymAccess")
     private GymAccess gymAccess;
 

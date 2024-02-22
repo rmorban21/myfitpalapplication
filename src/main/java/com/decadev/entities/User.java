@@ -1,6 +1,9 @@
 package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.decadev.converters.FitnessGoalConverter;
+import com.decadev.converters.FitnessLevelConverter;
+import com.decadev.converters.GymAccessConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -23,16 +26,15 @@ public class User {
     @DynamoDBAttribute(attributeName = "email")
     private String email;
 
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
+    @DynamoDBTypeConverted(converter = GymAccessConverter.class)
     @DynamoDBAttribute(attributeName = "gymAccess")
     private GymAccess gymAccess;
 
-    // Fitness assessment attributes
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
+    @DynamoDBTypeConverted(converter = FitnessGoalConverter.class)
     @DynamoDBAttribute(attributeName = "fitnessGoal")
     private FitnessGoal fitnessGoal;
 
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
+    @DynamoDBTypeConverted(converter = FitnessLevelConverter.class)
     @DynamoDBAttribute(attributeName = "fitnessLevel")
     private FitnessLevel fitnessLevel;
 
