@@ -1,5 +1,7 @@
 package com.decadev.entities;
 
+import com.decadev.enums.ExerciseType;
+import com.decadev.enums.FitnessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

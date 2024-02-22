@@ -1,6 +1,6 @@
 package com.decadev.controllers;
 
-import com.decadev.entities.GymAccess;
+import com.decadev.enums.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;

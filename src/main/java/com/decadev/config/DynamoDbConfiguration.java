@@ -8,6 +8,10 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.decadev.converters.FitnessGoalConverter;
+import com.decadev.converters.FitnessLevelConverter;
+import com.decadev.converters.GymAccessConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,11 +26,22 @@ public class DynamoDbConfiguration {
     @Value("${aws.dynamodb.secretKey}")
     private String awsSecretKey;
 
+    @Autowired
+    private FitnessGoalConverter fitnessGoalConverter;
+
+    @Autowired
+    private FitnessLevelConverter fitnessLevelConverter;
+
+    @Autowired
+    private GymAccessConverter gymAccessConverter;
+
     @Bean
     public DynamoDBMapper dynamoDBMapper() {
         return new DynamoDBMapper(amazonDynamoDb());
     }
 
+
+    // Method to create AmazonDynamoDB client
     private AmazonDynamoDB amazonDynamoDb() {
         return AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(dynamoDbEndpoint, "us-west-2"))
@@ -34,6 +49,7 @@ public class DynamoDbConfiguration {
                 .build();
     }
 
+    // Method to provide AWS credentials for DynamoDB client
     private AWSCredentialsProvider amazonDynamoDBCredentials() {
         return new AWSStaticCredentialsProvider(new BasicAWSCredentials(awsAccessKey, awsSecretKey));
     }

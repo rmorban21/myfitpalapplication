@@ -1,6 +1,10 @@
 package com.decadev.services;
 
 import com.decadev.entities.*;
+import com.decadev.enums.ExerciseType;
+import com.decadev.enums.FitnessGoal;
+import com.decadev.enums.FitnessLevel;
+import com.decadev.enums.GymAccess;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

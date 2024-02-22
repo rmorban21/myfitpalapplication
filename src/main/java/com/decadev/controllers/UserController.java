@@ -1,8 +1,8 @@
 package com.decadev.controllers;
 
-import com.decadev.entities.FitnessGoal;
-import com.decadev.entities.FitnessLevel;
-import com.decadev.entities.GymAccess;
+import com.decadev.enums.FitnessGoal;
+import com.decadev.enums.FitnessLevel;
+import com.decadev.enums.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;

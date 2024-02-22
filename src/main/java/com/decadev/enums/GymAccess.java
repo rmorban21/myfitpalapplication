@@ -1,4 +1,4 @@
-package com.decadev.entities;
+package com.decadev.enums;
 
 public enum GymAccess {
     HOME_GYM_NO_WEIGHTS,

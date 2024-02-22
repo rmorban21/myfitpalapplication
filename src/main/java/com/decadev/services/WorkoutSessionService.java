@@ -1,6 +1,7 @@
 package com.decadev.services;
 
 import com.decadev.entities.*;
+import com.decadev.enums.*;
 import com.decadev.repositories.WorkoutSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

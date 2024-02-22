@@ -1,4 +1,7 @@
 import com.decadev.entities.*;
+import com.decadev.enums.ExerciseType;
+import com.decadev.enums.FitnessLevel;
+import com.decadev.enums.GymAccess;
 import com.decadev.services.ExerciseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,11 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class ExerciseServiceTest {
 

@@ -1,8 +1,10 @@
 package com.decadev.converters;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
-import com.decadev.entities.FitnessLevel;
+import com.decadev.enums.FitnessLevel;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FitnessLevelConverter implements DynamoDBTypeConverter<String, FitnessLevel> {
 
     @Override

@@ -1,4 +1,4 @@
-package com.decadev.entities;
+package com.decadev.enums;
 
 public enum ExerciseType {
     CARDIO("Cardio: Exercises intended to increase heart rate and stamina. Includes running, cycling, and aerobics."),

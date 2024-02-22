@@ -1,7 +1,9 @@
 package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.decadev.converters.DayConverter;
 import com.decadev.converters.ExerciseListConverter;
+import com.decadev.enums.Day;
 import lombok.Data;
 
 import java.time.Duration;
@@ -17,8 +19,8 @@ public class WorkoutSession {
     @DynamoDBAttribute(attributeName = "userId") // Reference to parent plan
     private String userId;
 
+    @DynamoDBTypeConverted(converter = DayConverter.class)
     @DynamoDBAttribute(attributeName = "day")
-    @DynamoDBTypeConvertedEnum
     private Day day;
 
     @DynamoDBTypeConverted(converter = ExerciseListConverter.class)

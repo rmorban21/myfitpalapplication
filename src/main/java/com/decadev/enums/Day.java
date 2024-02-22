@@ -1,4 +1,4 @@
-package com.decadev.entities;
+package com.decadev.enums;
 
 //TODO: For Day, the comments suggest different sets of days for different fitness goals.
 // Ensure that the application logic correctly handles these variations when generating workout plans.
