@@ -2,6 +2,7 @@ package com.decadev.entities;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.decadev.converters.DayConverter;
+import com.decadev.converters.DurationConverter;
 import com.decadev.converters.ExerciseListConverter;
 import com.decadev.enums.Day;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class WorkoutSession {
     @DynamoDBAttribute(attributeName = "exercises")
     private List<Exercise> exercises;
 
+    @DynamoDBTypeConverted(converter = DurationConverter.class)
     @DynamoDBAttribute(attributeName = "sessionDuration")
     private Duration sessionDuration;
 

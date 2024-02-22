@@ -17,7 +17,8 @@ public class WorkoutPlanService {
     @Autowired
     private WorkoutSessionService workoutSessionService;
 
-    private static final String GENERAL_ADVICE = "Remember to stretch before and after your workout for at least 5 minutes. " +
+    //TODO: need to revisit how usr aavailabiltiy is retrieved- workout sessions are not properly distributed based on availability
+    private String GENERAL_ADVICE = "Remember to stretch before and after your workout for at least 5 minutes. " +
             "Dynamic stretches are recommended before starting to prepare your muscles. " +
             "After your workout, use static stretches to aid in recovery. " +
             "Incorporate full-body foam rolling (SMR) to help release muscle tightness and improve flexibility. " +
