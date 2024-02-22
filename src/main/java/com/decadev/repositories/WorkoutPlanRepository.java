@@ -40,14 +40,6 @@ public class WorkoutPlanRepository {
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
-    public WorkoutPlan updateWorkoutPlan(WorkoutPlan workoutPlan) {
-        DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression();
-        saveExpression.withExpectedEntry("planId",
-                new ExpectedAttributeValue(new AttributeValue(workoutPlan.getPlanId())).withExists(true));
-        mapper.save(workoutPlan, saveExpression);
-        return workoutPlan;
-    }
-
     //TODO: For the deleteByUserId method in WorkoutPlanRepository,
     // consider adding transactional integrity checks or handling potential cascading effects
     public void deleteByUserId(String userId) {

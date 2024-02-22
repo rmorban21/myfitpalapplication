@@ -5,6 +5,7 @@ import com.decadev.repositories.WorkoutSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,70 +17,146 @@ public class WorkoutSessionService {
     @Autowired
     private ExerciseService exerciseService;
 
+    /**
+     * Constructs a WorkoutSessionService with the necessary dependencies.
+     * @param workoutSessionRepository the repository for workout sessions
+     * @param exerciseService the service for managing exercises
+     */
     public WorkoutSessionService(WorkoutSessionRepository workoutSessionRepository, ExerciseService exerciseService) {
         this.workoutSessionRepository = workoutSessionRepository;
         this.exerciseService = exerciseService;
     }
-    // TODO: Consider additional error handling here
 
-    public WorkoutSession generateWorkoutSession(User user) {
-        // Determine the workout day based on the user's fitness goal
-        Day day = determineWorkoutDay(user.getFitnessGoal());
+    /**
+     * Generates workout sessions for a user based on their availability and fitness goals.
+     * @param user the user for whom to generate workout sessions
+     * @return a list of generated workout sessions
+     */
+    public List<WorkoutSession> generateWorkoutSessions(User user) {
+        List<WorkoutSession> sessions = new ArrayList<>();
+        int sessionsCount = calculateSessionsPerWeek(user.getAvailability(), user.getFitnessGoal());
 
-        // Get exercises for the workout session based on user and fitness goal
-        List<Exercise> sessionExercises = getExercisesForWorkoutSession(user);
+        for (int i = 0; i < sessionsCount; i++) {
+            Day day = determineWorkoutDay(user.getFitnessGoal(), i);
+            List<Exercise> sessionExercises = getCustomizedExercises(user, day);
+            Duration sessionDuration = determineSessionDuration(user.getFitnessLevel(), user.getAvailability());
 
-        // Create the workout session
-        WorkoutSession workoutSession = new WorkoutSession();
-        workoutSession.setUserId(user.getUserId()); // Assuming user.getUserId() represents the planId
-        workoutSession.setDay(day);
-        workoutSession.setExercises(sessionExercises);
+            WorkoutSession session = new WorkoutSession();
+            session.setUserId(user.getUserId());
+            session.setDay(day);
+            session.setExercises(sessionExercises);
+            session.setSessionDuration(sessionDuration);
 
-        // Save the workout session to the repository
-        return workoutSessionRepository.save(workoutSession);
-    }
-
-    private List<Exercise> getExercisesForWorkoutSession(User user) {
-        // Filter exercises based on user's fitness goal, gym access, and fitness level
-        List<Exercise> filteredExercises = getCustomizedExercises(user);
-
-        // Further filter exercises based on the workout day
-        return filterExercisesByDay(filteredExercises, determineWorkoutDay(user.getFitnessGoal()), user.getGymAccess());
-    }
-
-    public List<Exercise> filterExercisesByDay(List<Exercise> exercises, Day day, GymAccess gymAccess) {
-        // Logic to filter exercises based on the workout day
-        switch (day) {
-            case BACK_AND_SHOULDERS:
-                // Filter exercises for back and shoulders
-                return filterExercisesByBodyPart(Arrays.asList("Back", "Shoulders"), exercises, gymAccess);
-            case LEGS:
-                // Filter exercises for legs
-                return filterExercisesByBodyPart(Collections.singletonList("Legs"), exercises, gymAccess);
-            case CHEST:
-                // Filter exercises for chest
-                return filterExercisesByBodyPart(Collections.singletonList("Chest"), exercises, gymAccess);
-            case LEGS_ARMS:
-                // Filter exercises for legs and arms
-                return filterExercisesByBodyPart(Arrays.asList("Legs", "Arms"), exercises, gymAccess);
-            case UPPER_BODY:
-                // Filter exercises for upper body (back, chest, shoulders)
-                return filterExercisesByBodyPart(Arrays.asList("Back", "Chest", "Shoulders"), exercises, gymAccess);
-            case LOWER_BODY:
-                // Filter exercises for lower body (legs)
-                return filterExercisesByBodyPart(Collections.singletonList("Legs"), exercises, gymAccess);
-            default:
-                // Return all exercises if no specific day is defined
-                return exercises;
+            workoutSessionRepository.save(session);
+            sessions.add(session);
         }
+
+        return sessions;
     }
 
+    /**
+     * Calculates the number of sessions per week based on user availability and fitness goals.
+     * @param availability the user's availability in hours per week
+     * @param goal the user's fitness goal
+     * @return the calculated number of sessions per week
+     */
+    public int calculateSessionsPerWeek(Integer availability, FitnessGoal goal) {
+        int baseSessionCount = Math.max(2, availability / 2); // Ensures a minimum of 2 sessions
+        return switch (goal) {
+            case BUILD_MUSCLE -> Math.min(baseSessionCount, 5);
+            case WEIGHT_LOSS -> Math.min(baseSessionCount, 4);
+            case STRENGTH -> Math.min(baseSessionCount, 3);
+            default -> baseSessionCount;
+        };
+    }
+
+    /**
+     * Determines the duration of each workout session based on the user's fitness level and availability.
+     * @param fitnessLevel the user's fitness level
+     * @param availability the user's availability in hours per week
+     * @return the duration of each workout session
+     */
+    private Duration determineSessionDuration(FitnessLevel fitnessLevel, Integer availability) {
+        return switch (fitnessLevel) {
+            case BEGINNER -> Duration.ofMinutes(45);
+            default -> availability >= 4 ? Duration.ofMinutes(60) : Duration.ofMinutes(30);
+        };
+    }
+
+    /**
+     * Determines the focus day for a workout session based on the user's fitness goal and the session index.
+     * @param fitnessGoal the user's fitness goal
+     * @param sessionIndex the index of the session in the workout plan
+     * @return the day focus of the workout session
+     */
+    private Day determineWorkoutDay(FitnessGoal fitnessGoal, int sessionIndex) {
+        var daysMapping = Map.of(
+                FitnessGoal.BUILD_MUSCLE, Arrays.asList(Day.CHEST, Day.BACK_AND_SHOULDERS, Day.LEGS, Day.LEGS_ARMS),
+                FitnessGoal.WEIGHT_LOSS, Arrays.asList(Day.UPPER_BODY, Day.LOWER_BODY),
+                FitnessGoal.STRENGTH, Arrays.asList(Day.BACK_AND_SHOULDERS, Day.LEGS, Day.CHEST)
+        );
+
+        List<Day> days = daysMapping.getOrDefault(fitnessGoal, Collections.singletonList(Day.UPPER_BODY));
+        return days.get(sessionIndex % days.size());
+    }
+
+    /**
+     * Gets customized exercises for a user based on the day's focus and the user's profile.
+     * @param user the user for whom to customize exercises
+     * @param day the focus day for the workout session
+     * @return a list of customized exercises
+     */
+    private List<Exercise> getCustomizedExercises(User user, Day day) {
+        List<Exercise> filteredExercises = exerciseService.getAllExercises().stream()
+                .filter(e -> exerciseService.isEquipmentAccessible(user.getGymAccess(), e.getEquipment()) && e.getFitnessLevel().compareTo(user.getFitnessLevel()) <= 0)
+                .collect(Collectors.toList());
+
+        return filterExercisesByDay(filteredExercises, day, user.getFitnessGoal());
+    }
+
+    /**
+     * Filters exercises based on the workout day and fitness goal.
+     * @param exercises the list of exercises to filter
+     * @param day the focus day for the workout session
+     * @param goal the user's fitness goal
+     * @return a list of filtered exercises
+     */
+    public List<Exercise> filterExercisesByDay(List<Exercise> exercises, Day day, FitnessGoal goal) {
+        // Filters exercises based on the workout day and fitness goal
+        Set<String> relevantBodyParts = switch (day) {
+            case BACK_AND_SHOULDERS -> Set.of("Back", "Shoulders");
+            case LEGS -> Set.of("Legs");
+            case CHEST -> Set.of("Chest");
+            case LEGS_ARMS -> Set.of("Legs", "Arms");
+            case UPPER_BODY -> goal == FitnessGoal.WEIGHT_LOSS ? Set.of("Cardio", "Upper Body") : Set.of("Back", "Chest", "Shoulders");
+            case LOWER_BODY -> Set.of("Legs");
+        };
+
+        return exercises.stream()
+                .filter(e -> relevantBodyParts.contains(e.getBodyPart()) && (goal != FitnessGoal.WEIGHT_LOSS || e.getExerciseType() == ExerciseType.CARDIO || e.getExerciseType() == ExerciseType.COMPOUND))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Filters exercises based on body part and gym access.
+     * @param bodyParts the list of body parts to filter by
+     * @param exercises the list of exercises to filter
+     * @param gymAccess the user's gym access level
+     * @return a list of filtered exercises
+     */
     public List<Exercise> filterExercisesByBodyPart(List<String> bodyParts, List<Exercise> exercises, GymAccess gymAccess) {
         return exercises.stream()
                 .filter(e -> bodyParts.contains(e.getBodyPart()))
                 .filter(e -> exerciseService.isEquipmentAccessible(gymAccess, e.getEquipment()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Filters exercises based on the user's fitness level.
+     * @param exercises the list of exercises to filter
+     * @param userFitnessLevel the fitness level of the user
+     * @return a list of filtered exercises
+     */
     public List<Exercise> filterExercisesByFitnessLevel(List<Exercise> exercises, FitnessLevel userFitnessLevel) {
         if (exercises == null || userFitnessLevel == null) {
             return Collections.emptyList(); // or throw an IllegalArgumentException
@@ -89,94 +166,12 @@ public class WorkoutSessionService {
                 .filter(exercise -> exercise != null && exercise.getFitnessLevel() != null && exercise.getFitnessLevel().compareTo(userFitnessLevel) <= 0)
                 .collect(Collectors.toList());
     }
-    public List<Exercise> filterExercisesByGoal(List<Exercise> exercises, FitnessGoal goal) {
-        return switch (goal) {
-            case WEIGHT_LOSS -> exercises.stream()
-                    .filter(e -> ExerciseType.CARDIO.equals(e.getExerciseType()) || ExerciseType.COMPOUND.equals(e.getExerciseType()))
-                    .collect(Collectors.toList());
-            case BUILD_MUSCLE, STRENGTH -> exercises.stream()
-                    .filter(e -> ExerciseType.COMPOUND.equals(e.getExerciseType()) || ExerciseType.ISOLATION.equals(e.getExerciseType()))
-                    .collect(Collectors.toList());
-            default -> exercises;
-        };
-    }
 
-    public List<Exercise> filterExercisesByBodyPartForStrength(List<String> bodyParts, List<Exercise> exercises, GymAccess gymAccess) {
-        return exercises.stream()
-                .filter(e -> bodyParts.contains(e.getBodyPart()))
-                .filter(e -> exerciseService.isEquipmentAccessible(gymAccess, e.getEquipment()))
-                .collect(Collectors.toList());
-    }
-
-    //generate focused sessions for limited availability
-    public List<List<Exercise>> generateFocusedSessions(User user) {
-        // Check if the user's availability is below the minimum required for a comprehensive plan
-        if (user.getAvailability() < 2) {
-            // TODO: Ideally, this check should be performed before calling this method
-            throw new IllegalArgumentException("Availability is below the minimum required threshold.");
-        }
-
-        List<Exercise> customizedExercises = getCustomizedExercises(user);
-        // Assuming the user's fitness goal has already been considered in getCustomizedExercises
-
-        // Example focuses based on common fitness goals
-        List<String> focusAreas = determineFocusAreasBasedOnGoal(user.getFitnessGoal());
-
-        Map<String, List<Exercise>> exercisesByFocus = new HashMap<>();
-        for (String focus : focusAreas) {
-            exercisesByFocus.put(focus, new ArrayList<>());
-        }
-
-        // Distribute exercises into the focus areas
-        for (Exercise exercise : customizedExercises) {
-            for (String focus : focusAreas) {
-                if (exercise.getBodyPart().equalsIgnoreCase(focus)) {
-                    exercisesByFocus.get(focus).add(exercise);
-                }
-            }
-        }
-
-        // Organize exercises into sessions
-        List<List<Exercise>> focusedSessions = new ArrayList<>();
-        for (String focus : focusAreas) {
-            List<Exercise> focusExercises = exercisesByFocus.get(focus);
-            if (!focusExercises.isEmpty()) {
-                // Here you could further split or organize exercises based on total session time, intensity, etc.
-                focusedSessions.add(focusExercises);
-            }
-        }
-
-        return focusedSessions;
-    }
-    private List<String> determineFocusAreasBasedOnGoal(FitnessGoal goal) {
-        // return a list of focus areas (body parts or exercise types) based on the user's fitness goal
-        switch (goal) {
-            case WEIGHT_LOSS:
-                return Arrays.asList("Cardio", "Upper Body", "Lower Body");
-            case BUILD_MUSCLE:
-                return Arrays.asList("Legs", "Back", "Chest", "Arms", "Shoulders");
-            case STRENGTH:
-                return Arrays.asList("Legs", "Back", "Chest", "Shoulders");
-            default:
-                return Collections.emptyList();
-        }
-    }
-    public List<Exercise> getCustomizedExercises(User user) {
-        List<Exercise> accessibleExercises = filterExercisesByGymAccess(user.getGymAccess());
-        return filterExercisesByFitnessLevel(accessibleExercises, user.getFitnessLevel()).stream()
-                .map(exercise -> exerciseService.customizeExerciseIntensity(exercise, user.getFitnessLevel(), user.getFitnessGoal())) // Pass the required parameters
-                .collect(Collectors.toList());
-    }
-
-    public int calculateSessionsPerWeek(Integer availability, FitnessGoal goal) {
-        int baseSessionCount = availability != null && availability >= 2 ? (availability + 1) / 2 : 2;
-        return switch (goal) {
-            case BUILD_MUSCLE -> Math.min(baseSessionCount, 5);
-            case WEIGHT_LOSS -> Math.min(baseSessionCount, 4);
-            case STRENGTH -> Math.min(baseSessionCount, 3);
-            default -> baseSessionCount;
-        };
-    }
+    /**
+     * Filters exercises based on the user's gym access.
+     * @param gymAccess the gym access level of the user
+     * @return a list of exercises accessible to the user
+     */
     public List<Exercise> filterExercisesByGymAccess(GymAccess gymAccess) {
         if (gymAccess == null) {
             return Collections.emptyList(); // or throw an IllegalArgumentException
@@ -199,48 +194,19 @@ public class WorkoutSessionService {
                 .collect(Collectors.toList());
     }
 
-    private Day determineWorkoutDay(FitnessGoal fitnessGoal) {
-        // Logic to determine the workout day based on fitness goal
-        switch (fitnessGoal) {
-            case BUILD_MUSCLE:
-            case STRENGTH:
-                // For build muscle and strength goals
-                return determineBuildMuscleAndStrengthDay();
-            case WEIGHT_LOSS:
-                // For weight loss goal
-                return determineWeightLossDay();
-            default:
-                // Default to a generic workout day
-                return Day.UPPER_BODY;
-        }
-    }
-// TODO: Implement logic below to populate exercises according to day, level and goal
-    private Day determineBuildMuscleAndStrengthDay() {
-        // Logic to determine the workout day for build muscle and strength goals
-        // For example, you could rotate through different muscle groups
-        // You can implement your custom logic here
-        // For now, let's return a generic upper body day
-        return Day.UPPER_BODY;
-    }
-
-    private Day determineWeightLossDay() {
-        // Logic to determine the workout day for weight loss goals
-        // You can implement your custom logic here
-        // For now, let's return a generic lower body day
-        return Day.LOWER_BODY;
-    }
-    public WorkoutSession createWorkoutSession(User user, String planId, Day day) {
-        List<List<Exercise>> focusedSessions = generateFocusedSessions(user);
-        // For simplicity, assuming the first session is used
-        List<Exercise> sessionExercises = focusedSessions.isEmpty() ? List.of() : focusedSessions.get(0);
-        WorkoutSession workoutSession = new WorkoutSession(planId, day, sessionExercises);
-        return workoutSessionRepository.save(workoutSession);
-    }
-
+    /**
+     * Finds a workout session by its ID.
+     * @param sessionId the ID of the workout session
+     * @return an Optional containing the workout session if found
+     */
     public Optional<WorkoutSession> findWorkoutSessionById(String sessionId) {
         return workoutSessionRepository.findById(sessionId);
     }
 
+    /**
+     * Deletes a workout session by its ID.
+     * @param sessionId the ID of the workout session to delete
+     */
     public void deleteWorkoutSessionById(String sessionId) {
         workoutSessionRepository.deleteById(sessionId);
     }
