@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ExerciseService {
@@ -107,31 +108,28 @@ public class ExerciseService {
             return false;
         }
 
-        switch (gymAccess) {
-            case HOME_GYM_NO_WEIGHTS:
-                return "None".equalsIgnoreCase(equipment);
-            case HOME_GYM_WITH_WEIGHTS:
-                return "None".equalsIgnoreCase(equipment) || "Dumbbells".equalsIgnoreCase(equipment) || "Foam Roller".equalsIgnoreCase(equipment);
-            case FULL_GYM_ACCESS:
-                return true;
-            default:
-                return false; // Ensuring all paths return a value
-        }
+        return switch (gymAccess) {
+            case HOME_GYM_NO_WEIGHTS -> "None".equalsIgnoreCase(equipment);
+            case HOME_GYM_WITH_WEIGHTS -> "None".equalsIgnoreCase(equipment) || "Dumbbells".equalsIgnoreCase(equipment) || "Foam Roller".equalsIgnoreCase(equipment);
+            case FULL_GYM_ACCESS -> true;
+        };
     }
 
     public Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
-        // Example customization logic
         switch (fitnessGoal) {
             case BUILD_MUSCLE -> {
-                exercise.setSets(3); // Standard hypertrophy range
+                exercise.setSets(3);
                 exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER ? 8 : 12);
             }
             case WEIGHT_LOSS -> {
-                exercise.setSets(3); // Slightly lower volume for calorie management
+                exercise.setSets(3);
                 exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER ? 10 : 15);
+                if (exercise.getExerciseType() == ExerciseType.CARDIO) {
+                    exercise.setDuration(Duration.ofMinutes(fitnessLevel == FitnessLevel.BEGINNER ? 20 : 30));
+                }
             }
             case STRENGTH -> {
-                exercise.setSets(fitnessLevel == FitnessLevel.BEGINNER ? 3 : 5); // Increased volume for strength
+                exercise.setSets(fitnessLevel == FitnessLevel.BEGINNER ? 3 : 5);
                 exercise.setReps(getRepsForStrengthGoal(fitnessLevel));
             }
         }
@@ -149,11 +147,50 @@ public class ExerciseService {
     public List<Exercise> getCustomizedExercisesForUser(GymAccess gymAccess, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
         return exercises.stream()
                 .filter(exercise -> isEquipmentAccessible(gymAccess, exercise.getEquipment()))
-                .filter(exercise -> exercise.getFitnessLevel().compareTo(fitnessLevel) <= 0)
-                .map(exercise -> customizeExerciseIntensity(exercise, fitnessLevel, fitnessGoal))
+                .filter(exercise -> isExerciseSuitableForFitnessLevel(exercise, fitnessLevel))
+                .map(exercise -> customizeExerciseForGoal(exercise, fitnessGoal))
                 .collect(Collectors.toList());
     }
 
+
+    public boolean isExerciseSuitableForFitnessLevel(Exercise exercise, FitnessLevel userFitnessLevel) {
+        // Your logic to filter exercises based on user fitness level
+        return switch (userFitnessLevel) {
+            case BEGINNER -> exercise.getFitnessLevel() == FitnessLevel.BEGINNER || exercise.getFitnessLevel() == FitnessLevel.INTERMEDIATE;
+            case INTERMEDIATE -> exercise.getFitnessLevel() != FitnessLevel.EXPERT; // Intermediate can do beginner to advanced
+            case ADVANCED, EXPERT -> true; // Advanced and expert can do any level
+            default -> false;
+        };
+    }
+
+    public Exercise customizeExerciseForGoal(Exercise exercise, FitnessGoal fitnessGoal) {
+        // Customization logic based on the goal
+        switch (fitnessGoal) {
+            case BUILD_MUSCLE:
+                // Hypertrophy typically requires moderate to high reps and multiple sets
+                exercise.setSets(3); // Standard for muscle growth
+                exercise.setReps(10); // Ideal rep range for hypertrophy
+                break;
+            case WEIGHT_LOSS:
+                // Weight loss might focus more on higher reps and cardio
+                exercise.setSets(3); // Increase volume slightly
+                if (exercise.getExerciseType() == ExerciseType.CARDIO) {
+                    exercise.setDuration(Duration.ofMinutes(20)); // Longer duration for cardio exercises
+                } else {
+                    exercise.setReps(15); // Higher reps for increased calorie burn
+                }
+                break;
+            case STRENGTH:
+                // Strength training involves lower reps and higher intensity
+                exercise.setSets(5); // More sets for strength
+                exercise.setReps(5); // Lower reps with higher weight
+                break;
+            default:
+                // For any other goals, or if no specific goal is set, keep the exercise unchanged
+                break;
+        }
+        return exercise;
+    }
     public List<Exercise> getAllExercises() {
         return new ArrayList<>(exercises); // Return a copy of the static list
     }

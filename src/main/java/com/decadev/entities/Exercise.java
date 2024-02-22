@@ -20,7 +20,7 @@ public class Exercise {
     private Duration duration;
 
     // Private constructor to prevent direct instantiation
-    private Exercise() {}
+    public Exercise() {}
 
     // Builder method to create Exercise objects
     public static ExerciseBuilder builder() {

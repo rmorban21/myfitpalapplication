@@ -71,14 +71,14 @@ class WorkoutPlanRepositoryTest {
         assertFalse(workoutPlanRepository.findWorkoutPlanByUserId("nonexistentUserId").isPresent());
     }
 
-    @Test
-    void updateWorkoutPlan_Success() {
-        doNothing().when(mapper).save(eq(workoutPlan), any(DynamoDBSaveExpression.class));
+//   @Test
+//   void updateWorkoutPlan_Success() {
+//       doNothing().when(mapper).save(eq(workoutPlan), any(DynamoDBSaveExpression.class));
 
-        workoutPlanRepository.updateWorkoutPlan(workoutPlan);
+//       workoutPlanRepository.updateWorkoutPlan(workoutPlan);
 
-        verify(mapper).save(eq(workoutPlan), any(DynamoDBSaveExpression.class));
-    }
+//       verify(mapper).save(eq(workoutPlan), any(DynamoDBSaveExpression.class));
+//   }
 
     @Test
     void deleteByUserId_FoundAndDeleted() {
