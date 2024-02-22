@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.decadev.converters.ExerciseListConverter;
 import lombok.Data;
 
+import java.time.Duration;
 import java.util.List;
 
 @Data
@@ -23,6 +24,9 @@ public class WorkoutSession {
     @DynamoDBTypeConverted(converter = ExerciseListConverter.class)
     @DynamoDBAttribute(attributeName = "exercises")
     private List<Exercise> exercises;
+
+    @DynamoDBAttribute(attributeName = "sessionDuration")
+    private Duration sessionDuration;
 
     // Constructor with DynamoDB annotations
     public WorkoutSession() {

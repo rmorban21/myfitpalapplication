@@ -214,7 +214,7 @@ public class WorkoutSessionService {
                 return Day.UPPER_BODY;
         }
     }
-
+// TODO: Implement logic below to populate exercises according to day, level and goal
     private Day determineBuildMuscleAndStrengthDay() {
         // Logic to determine the workout day for build muscle and strength goals
         // For example, you could rotate through different muscle groups
