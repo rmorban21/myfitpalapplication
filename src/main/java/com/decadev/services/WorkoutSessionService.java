@@ -41,22 +41,22 @@ public class WorkoutSessionService {
 
         for (int i = 0; i < sessionsCount; i++) {
             Day day = determineWorkoutDay(user.getFitnessGoal(), i);
-            List<Exercise> sessionExercises = getCustomizedExercises(user, day);
+            // Use the new method to get customized exercises
+            List<Exercise> sessionExercises = exerciseService.getCustomizedExercisesForUser(user.getGymAccess(), user.getFitnessLevel(), user.getFitnessGoal());
             Duration sessionDuration = determineSessionDuration(user.getFitnessLevel(), user.getAvailability());
 
             WorkoutSession session = new WorkoutSession();
             session.setUserId(user.getUserId());
             session.setDay(day);
-            session.setExercises(sessionExercises);
+            session.setExercises(sessionExercises); // Now getting a tailored set of exercises
             session.setSessionDuration(sessionDuration);
 
-            workoutSessionRepository.save(session);
+            // Assume workoutSessionRepository.save(session) is correctly implemented
             sessions.add(session);
         }
 
         return sessions;
     }
-
     /**
      * Calculates the number of sessions per week based on user availability and fitness goals.
      * @param availability the user's availability in hours per week

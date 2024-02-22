@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ExerciseService {
@@ -119,12 +120,20 @@ public class ExerciseService {
     }
 
     public Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
-        if (fitnessGoal == FitnessGoal.BUILD_MUSCLE) {
-            exercise.setReps(10);
-        } else if (fitnessGoal == FitnessGoal.WEIGHT_LOSS) {
-            exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE ? 10 : 15);
-        } else if (fitnessGoal == FitnessGoal.STRENGTH) {
-            exercise.setReps(getRepsForStrengthGoal(fitnessLevel));
+        // Example customization logic
+        switch (fitnessGoal) {
+            case BUILD_MUSCLE -> {
+                exercise.setSets(3); // Standard hypertrophy range
+                exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER ? 8 : 12);
+            }
+            case WEIGHT_LOSS -> {
+                exercise.setSets(3); // Slightly lower volume for calorie management
+                exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER ? 10 : 15);
+            }
+            case STRENGTH -> {
+                exercise.setSets(fitnessLevel == FitnessLevel.BEGINNER ? 3 : 5); // Increased volume for strength
+                exercise.setReps(getRepsForStrengthGoal(fitnessLevel));
+            }
         }
         return exercise;
     }
@@ -135,6 +144,14 @@ public class ExerciseService {
             case BEGINNER, INTERMEDIATE -> 5;
             case ADVANCED, EXPERT -> 3;
         };
+    }
+
+    public List<Exercise> getCustomizedExercisesForUser(GymAccess gymAccess, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
+        return exercises.stream()
+                .filter(exercise -> isEquipmentAccessible(gymAccess, exercise.getEquipment()))
+                .filter(exercise -> exercise.getFitnessLevel().compareTo(fitnessLevel) <= 0)
+                .map(exercise -> customizeExerciseIntensity(exercise, fitnessLevel, fitnessGoal))
+                .collect(Collectors.toList());
     }
 
     public List<Exercise> getAllExercises() {
