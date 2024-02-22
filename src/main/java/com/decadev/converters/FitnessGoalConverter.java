@@ -12,6 +12,6 @@ public class FitnessGoalConverter implements DynamoDBTypeConverter<String, Fitne
 
     @Override
     public FitnessGoal unconvert(final String s) {
-        return s == null ? null : FitnessGoal.valueOf(s);
+        return FitnessGoal.valueOf(s);
     }
 }

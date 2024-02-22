@@ -12,6 +12,6 @@ public class FitnessLevelConverter implements DynamoDBTypeConverter<String, Fitn
 
     @Override
     public FitnessLevel unconvert(final String s) {
-        return s == null ? null : FitnessLevel.valueOf(s);
+        return FitnessLevel.valueOf(s);
     }
 }

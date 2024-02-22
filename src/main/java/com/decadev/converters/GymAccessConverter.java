@@ -12,6 +12,6 @@ public class GymAccessConverter implements DynamoDBTypeConverter<String, GymAcce
 
     @Override
     public GymAccess unconvert(final String s) {
-        return s == null ? null : GymAccess.valueOf(s);
+        return GymAccess.valueOf(s);
     }
 }
