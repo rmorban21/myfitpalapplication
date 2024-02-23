@@ -83,5 +83,18 @@ public class Exercise {
             return exercise;
         }
     }
+    @Override
+    public String toString() {
+        return "Exercise{" +
+                "name='" + name + '\'' +
+                ", fitnessLevel=" + fitnessLevel +
+                ", exerciseType=" + exerciseType +
+                ", bodyPart='" + bodyPart + '\'' +
+                ", equipment='" + equipment + '\'' +
+                ", sets=" + sets +
+                ", reps=" + reps +
+                ", duration=" + duration +
+                '}';
+    }
 
 }

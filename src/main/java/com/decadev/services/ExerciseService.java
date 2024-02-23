@@ -14,24 +14,17 @@ import java.util.stream.Collectors;
 @Service
 public class ExerciseService {
     private List<Exercise> exercises = new ArrayList<>();
-    //TODO: populate lists below with exercises for improved exercises
     private List <Exercise> priorityExercises = new ArrayList<>();
     private List <Exercise> accessoryExercises = new ArrayList<>();
     private List <Exercise> coreExercises = new ArrayList<>();
     private List <Exercise> cardioExercises = new ArrayList<>();
-
-    //TODO: populate lists below with exercises with appropriate sets and reps for strength
-
-    //TODO: implement logic to prioritize  priorityexercise list
-            // TODO: set reps for all lists
-
     private List <Exercise> strengthExercises = new ArrayList<>();
 
-    //TODO: possibility for additional exercises for broader range
-    //TODO: Review of integration with WorkoutPlan and WorkoutSession via API endpoints that fetch exercises
-    // based on specific criteria
-
-    //TODO:organize priority exercises and then populate strength
+    /**
+     * Initializes the exercise lists.
+     * This method would typically populate the various lists (priority, accessory, core, cardio, strength) with exercises.
+     * Each exercise would be tailored to fit different fitness goals and levels.
+     */
     @PostConstruct
     public void init() {
         // Core Exercises
@@ -39,18 +32,12 @@ public class ExerciseService {
         coreExercises.add(Exercise.builder().name("Crunches").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(15).build());
         coreExercises.add(Exercise.builder().name("Russian Twists").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(12).build());
         coreExercises.add(Exercise.builder().name("Leg Raises").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(10).build());
-        coreExercises.add(Exercise.builder().name("Flutter Kicks").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(20).build());
         coreExercises.add(Exercise.builder().name("Bicycle Crunches").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ISOLATION).bodyPart("Core").equipment("None").sets(3).reps(12).build());
 
         // Cardio Exercises
         cardioExercises.add(Exercise.builder().name("StairMaster").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("StairMaster").duration(Duration.ofMinutes(15)).build());
         cardioExercises.add(Exercise.builder().name("Low-Intensity Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("Treadmill").duration(Duration.ofMinutes(30)).build());
-        cardioExercises.add(Exercise.builder().name("Incline Treadmill Walk").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("Treadmill").duration(Duration.ofMinutes(15)).build());
-        cardioExercises.add(Exercise.builder().name("Jump Squats").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("None").sets(3).reps(15).build());
-        cardioExercises.add(Exercise.builder().name("Burpees").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Full Body").equipment("None").sets(3).reps(10).build());
-        cardioExercises.add(Exercise.builder().name("Mountain Climbers").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Full Body").equipment("None").sets(3).reps(20).build());
-        cardioExercises.add(Exercise.builder().name("High Knees").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("None").sets(3).reps(30).build());
-        cardioExercises.add(Exercise.builder().name("Jumping Jacks").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Full Body").equipment("None").sets(3).reps(30).build());
+        cardioExercises.add(Exercise.builder().name("Incline Treadmill Walk/Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart("Legs").equipment("Treadmill").duration(Duration.ofMinutes(15)).build());
 
         //Priority Leg Exercises
         priorityExercises.add(Exercise.builder().name("Hack Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Hack Squat Machine").sets(3).reps(12).build());
@@ -119,128 +106,115 @@ public class ExerciseService {
 
 //Strength Exercises with relevant reps and sets for strength goal
         //Legs
-        strengthExercises.add(Exercise.builder().name("Hack Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Hack Squat Machine").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Back Squats").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Barbell").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Leg Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Leg Press Machine").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Front Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Legs").equipment("Barbell").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Hack Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.STRENGTH_LEGS).bodyPart("Legs").equipment("Hack Squat Machine").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Back Squats").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_LEGS).bodyPart("Legs").equipment("Barbell").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Leg Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_LEGS).bodyPart("Legs").equipment("Leg Press Machine").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Front Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.STRENGTH_LEGS).bodyPart("Legs").equipment("Barbell").sets(5).reps(5).build());
 
         //Push
-        strengthExercises.add(Exercise.builder().name("Dumbbell Bench Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Dumbbells").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Incline Bench Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Bench Press").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Flat Bench Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Bench Press").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Incline Dumbbell Bench Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Chest").equipment("Dumbbells").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Standing Military Overhead Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Shoulders").equipment("Barbell").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Seated Dumbbell Shoulder Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Shoulders").equipment("Dumbbells").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Standing Dumbbell Shoulder Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Shoulders").equipment("Dumbbells").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Dumbbell Bench Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Chest").equipment("Dumbbells").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Incline Bench Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Chest").equipment("Bench Press").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Flat Bench Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Chest").equipment("Bench Press").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Incline Dumbbell Bench Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Chest").equipment("Dumbbells").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Standing Military Overhead Press").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Shoulders").equipment("Barbell").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Seated Dumbbell Shoulder Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Shoulders").equipment("Dumbbells").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Standing Dumbbell Shoulder Press").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_PUSH).bodyPart("Shoulders").equipment("Dumbbells").sets(5).reps(5).build());
 
         //Pull
-        strengthExercises.add(Exercise.builder().name("Lat Pulldowns").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Lat Pulldown Machine").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("T-Bar Rows").fitnessLevel(FitnessLevel.EXPERT).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("T-bar machine").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Barbell Deadlifts").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Barbell").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Bent Over Barbell Rows").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Barbell").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Dumbbell Bent Over Rows").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Dumbbells").sets(5).reps(5).build());
-        strengthExercises.add(Exercise.builder().name("Rack Pulls").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.COMPOUND).bodyPart("Back").equipment("Barbell").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Lat Pulldowns").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_PULL).bodyPart("Back").equipment("Lat Pulldown Machine").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("T-Bar Rows").fitnessLevel(FitnessLevel.EXPERT).exerciseType(ExerciseType.STRENGTH_PULL).bodyPart("Back").equipment("T-bar machine").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Barbell Deadlifts").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.STRENGTH_PULL).bodyPart("Back").equipment("Barbell").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Bent Over Barbell Rows").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.STRENGTH_PULL).bodyPart("Back").equipment("Barbell").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Dumbbell Bent Over Rows").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.STRENGTH_PULL).bodyPart("Back").equipment("Dumbbells").sets(5).reps(5).build());
+        strengthExercises.add(Exercise.builder().name("Rack Pulls").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.STRENGTH_PULL).bodyPart("Back").equipment("Barbell").sets(5).reps(5).build());
     }
+    //TODO: need to make sure buildmuscle and strength goals excluse cardio exercises
+        // TODO: subsequentially need to make sure build muscle includes all priority and accessory exercises relevant to user fitness level
+        // TODO: need to make sure strength includes all strengthexercises and accessory exercises relevant to user fitness level
+        // TODO: need to  make sure weightloss includes all prioirty exercises and cardio exercises relevant to user fitness level
 
-    //  implement logic for RPE based on fitness level -
-    //TODO: Refactor methods below to use specializedlists including logic for prioritizing exercises and adding  accessories
-    //TODO: Ensure logic for beginner and intermediate is correct for determining overall intensity
-    // (ie: maxSets for workoutsession (might be implemented in workoutSessionService))
-    // TODO: first 2-3 exercises are less  reps  and heavier weight (more intense) reps go up to maximum after third exercise
-    // TODO: Need to implement logic for determining first 3 primary exercises
-    public Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
-        switch (fitnessGoal) {
-            case BUILD_MUSCLE -> {
-                exercise.setSets(3);
-                exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER ? 8 : 12);
-            }
-            case WEIGHT_LOSS -> {
-                exercise.setSets(3);
-                exercise.setReps(fitnessLevel == FitnessLevel.BEGINNER ? 10 : 15);
-                if (exercise.getExerciseType() == ExerciseType.CARDIO) {
-                    exercise.setDuration(Duration.ofMinutes(fitnessLevel == FitnessLevel.BEGINNER ? 20 : 30));
-                }
-            }
-            case STRENGTH -> {
-                exercise.setSets(fitnessLevel == FitnessLevel.BEGINNER ? 3 : 5);
-                exercise.setReps(getRepsForStrengthGoal(fitnessLevel));
-            }
-        }
-        return exercise;
-    }
-
-
-    private int getRepsForStrengthGoal(FitnessLevel fitnessLevel) {
-        return switch (fitnessLevel) {
-            case BEGINNER, INTERMEDIATE -> 5;
-            case ADVANCED, EXPERT -> 3;
-        };
-    }
-
+    /**
+     * Generates a list of exercises customized to the user's fitness level and goal.
+     * It smartly incorporates core exercises for all users, tailors the exercise selection based on the goal
+        * (building muscle, strength, or weight loss), and specifically adds cardio exercises for those with weight loss goals.
+     * @param fitnessLevel - user's fitness level.
+     * @param fitnessGoal -user's fitness goal.
+     * @return - returns a customized list of exercises for the user's fitness level and goal.
+     */
     public List<Exercise> getCustomizedExercisesForUser(FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
+        List<Exercise> customizedExercises = new ArrayList<>(coreExercises); // Core exercises for all users
+
+        // Add goal-specific exercises with appropriate filtering and settings
+        switch (fitnessGoal) {
+            case BUILD_MUSCLE:
+                // Include all priority and accessory exercises, exclude cardio
+                customizedExercises.addAll(filterExercisesByLevel(priorityExercises, fitnessLevel));
+                customizedExercises.addAll(filterExercisesByLevel(accessoryExercises, fitnessLevel));
+                break;
+            case STRENGTH:
+                // Include all strength (retain 5x5) and accessory exercises, exclude cardio
+                customizedExercises.addAll(filterStrengthExercises(strengthExercises, fitnessLevel));
+                customizedExercises.addAll(filterExercisesForStrengthAccessory(accessoryExercises, fitnessLevel));
+                break;
+            case WEIGHT_LOSS:
+                // Include priority exercises and all cardio, suitable for fitness level
+                customizedExercises.addAll(filterExercisesByLevel(priorityExercises, fitnessLevel));
+                customizedExercises.addAll(cardioExercises); // No need to filter by level as cardio is generally applicable
+                break;
+        }
+        return customizedExercises;
+    }
+
+    private List<Exercise> filterExercisesByLevel(List<Exercise> exercises, FitnessLevel fitnessLevel) {
         return exercises.stream()
-                .filter(exercise -> isExerciseSuitableForFitnessLevel(exercise, fitnessLevel))
-                // Apply goal-specific filters for exercise types
-                .filter(exercise -> {
-                    switch (fitnessGoal) {
-                        case BUILD_MUSCLE:
-                            // For BUILD_MUSCLE, exclude cardio exercises
-                            return exercise.getExerciseType() != ExerciseType.CARDIO;
-                        case STRENGTH:
-                            // For STRENGTH, include only compound exercises
-                            return exercise.getExerciseType() == ExerciseType.COMPOUND;
-                        case WEIGHT_LOSS:
-                            // For WEIGHT_LOSS, include both cardio and compound exercises
-                            return exercise.getExerciseType() == ExerciseType.CARDIO || exercise.getExerciseType() == ExerciseType.COMPOUND;
-                        default:
-                            // No exercise type filtering for other goals
-                            return true;
-                    }
-                })
-                .map(exercise -> customizeExerciseForGoal(exercise, fitnessGoal))
+                .filter(e -> isExerciseSuitableForFitnessLevel(e, fitnessLevel))
                 .collect(Collectors.toList());
     }
 
-    public boolean isExerciseSuitableForFitnessLevel(Exercise exercise, FitnessLevel userFitnessLevel) {
-        // Your logic to filter exercises based on user fitness level
-        return switch (userFitnessLevel) {
+    private List<Exercise> filterStrengthExercises(List<Exercise> exercises, FitnessLevel fitnessLevel) {
+        // Filter strength exercises without modifying their predefined sets and reps
+        return filterExercisesByLevel(exercises, fitnessLevel);
+    }
+
+    private List<Exercise> filterExercisesForStrengthAccessory(List<Exercise> exercises, FitnessLevel fitnessLevel) {
+        // Adjust accessory exercises for strength training (if necessary)
+        // This example maintains original rep/set but could be modified if needed
+        return exercises.stream()
+                .filter(e -> isExerciseSuitableForFitnessLevel(e, fitnessLevel))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Determines if an exercise is suitable for a user's fitness level, facilitating filtering of exercises to match user capability and ensuring progression.
+     * @param exercise - specific exercise from the exercise data.
+     * @param fitnessLevel - user's fitness level.
+     * @return - true or false based on the relevance of the specific exercises based on fitness level.
+     */
+    public boolean isExerciseSuitableForFitnessLevel(Exercise exercise, FitnessLevel fitnessLevel) {
+        return switch (fitnessLevel) {
             case BEGINNER -> exercise.getFitnessLevel() == FitnessLevel.BEGINNER || exercise.getFitnessLevel() == FitnessLevel.INTERMEDIATE;
             case INTERMEDIATE -> exercise.getFitnessLevel() != FitnessLevel.EXPERT; // Intermediate can do beginner to advanced
             case ADVANCED, EXPERT -> true; // Advanced and expert can do any level
-            default -> false;
         };
     }
 
-    public Exercise customizeExerciseForGoal(Exercise exercise, FitnessGoal fitnessGoal) {
-        // Customization logic based on the goal
-        switch (fitnessGoal) {
-            case BUILD_MUSCLE:
-                // Hypertrophy typically requires moderate to high reps and multiple sets
-                exercise.setSets(3); // Standard for muscle growth
-                exercise.setReps(10); // Ideal rep range for hypertrophy
-                break;
-            case WEIGHT_LOSS:
-                // Weight loss might focus more on higher reps and cardio
-                exercise.setSets(3); // Increase volume slightly
-                if (exercise.getExerciseType() == ExerciseType.CARDIO) {
-                    exercise.setDuration(Duration.ofMinutes(20)); // Longer duration for cardio exercises
-                } else {
-                    exercise.setReps(15); // Higher reps for increased calorie burn
-                }
-                break;
-            case STRENGTH:
-                // Strength training involves lower reps and higher intensity
-                exercise.setSets(5); // More sets for strength
-                exercise.setReps(5); // Lower reps with higher weight
-                break;
-            default:
-                // For any other goals, or if no specific goal is set, keep the exercise unchanged
-                break;
-        }
-        return exercise;
-    }
+    /**
+     * Provides a comprehensive list of all exercises available in the service, potentially useful for debugging, administration, or logging purposes.
+     * @return copy of all exercises.
+     */
     public List<Exercise> getAllExercises() {
-        return new ArrayList<>(exercises); // Return a copy of the static list
+        // Initialize a new list to hold all exercises
+        List<Exercise> allExercises = new ArrayList<>();
+
+        // Add all exercises from each specific list into the allExercises list
+        allExercises.addAll(priorityExercises);
+        allExercises.addAll(accessoryExercises);
+        allExercises.addAll(coreExercises);
+        allExercises.addAll(cardioExercises);
+        allExercises.addAll(strengthExercises);
+
+        // Return the combined list of all exercises
+        return allExercises;
     }
 
     public List<Exercise> getExercises() {

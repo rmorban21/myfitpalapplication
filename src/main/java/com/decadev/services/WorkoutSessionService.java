@@ -28,10 +28,6 @@ public class WorkoutSessionService {
         this.exerciseService = exerciseService;
     }
 
-    //TODO: make sure workoutsessions use existing exerciselist in model that prioritizes necessary lists and populates
-    // with exercises from specialized lists into exerciselist and in order (if possible)  -
-    //  worst case scenario is having workout sessions have all necessary lists
-    //  (priorityList, accessoryList with strengthList overriding priorities)
     /**
      * Generates workout sessions for a user based on their availability and fitness goals.
      * @param user the user for whom to generate workout sessions
@@ -39,28 +35,37 @@ public class WorkoutSessionService {
      */
     public List<WorkoutSession> generateWorkoutSessions(User user) {
         List<WorkoutSession> sessions = new ArrayList<>();
-        int sessionsCount = calculateSessionsPerWeek(user.getAvailability());
-        List<Day> workoutDays = determineWorkoutDays(user.getFitnessGoal());
+        List<Day> workoutDays = determineWorkoutDays(user.getFitnessGoal(), calculateSessionsPerWeek(user.getAvailability()));
 
-        // Fetch all customized exercises once to avoid multiple calls
-        List<Exercise> allCustomizedExercises = exerciseService.getCustomizedExercisesForUser(user.getFitnessLevel(), user.getFitnessGoal());
-
-        for (int i = 0; i < sessionsCount; i++) {
-            Day day = workoutDays.get(i % workoutDays.size());
-
-            // Refine exercises for each session based on the day's focus
-            List<Exercise> sessionExercises = filterExercisesByDay(allCustomizedExercises, day, user.getFitnessGoal());
+        for (Day day : workoutDays) {
+            // Generate session exercises based on the user's goal, level, and day
+            List<Exercise> sessionExercises = generateSessionExercises(user.getFitnessLevel(), user.getFitnessGoal(), day);
 
             WorkoutSession session = new WorkoutSession();
             session.setUserId(user.getUserId());
             session.setDay(day);
             session.setExercises(sessionExercises);
-            session.setSessionDuration(Duration.ofHours(1)); // Keep the session duration standardized to 1 hour
+            session.setSessionDuration(Duration.ofHours(1)); // Standardized to 1 hour
 
             sessions.add(workoutSessionRepository.save(session));
         }
 
         return sessions;
+    }
+
+    private List<Exercise> generateSessionExercises(FitnessLevel level, FitnessGoal goal, Day day) {
+        List<Exercise> allExercises = exerciseService.getCustomizedExercisesForUser(level, goal);
+        List<Exercise> sessionExercises = filterExercisesByDay(allExercises, day, goal);
+
+        // Adjust session composition based on the goal and fitness level
+        return adjustSessionComposition(sessionExercises, level, goal);
+    }
+
+    private List<Exercise> adjustSessionComposition(List<Exercise> exercises, FitnessLevel level, FitnessGoal goal) {
+        // This method would prioritize exercises, manage MRV, and ensure a core exercise is included.
+        // Implementation would depend on the specific logic for MRV, priority handling, and core inclusion.
+        // Placeholder for actual logic.
+        return exercises; // Adjusted list based on MRV and priorities.
     }
     /**
      * Calculates the number of sessions per week based on user availability. The minimum availability is 2 hours per week.
@@ -73,16 +78,23 @@ public class WorkoutSessionService {
 
     /**
      * Determines the focus day for a workout session based on the user's fitness goal and the session index.
-     * @param fitnessGoal the user's fitness goal
+     * @param goal the user's fitness goal
      * @return the day focus of the workout session
      */
-    private List<Day> determineWorkoutDays(FitnessGoal fitnessGoal) {
-        return switch (fitnessGoal) {
-            case BUILD_MUSCLE -> Arrays.asList(Day.CHEST, Day.BACK_AND_SHOULDERS, Day.LEGS, Day.LEGS_ARMS);
-            case WEIGHT_LOSS -> Arrays.asList(Day.UPPER_BODY, Day.LOWER_BODY);
-            case STRENGTH -> Arrays.asList(Day.BACK_AND_SHOULDERS, Day.LEGS, Day.CHEST);
-            default -> List.of(Day.values());
-        };
+    private List<Day> determineWorkoutDays(FitnessGoal goal, int sessionsCount) {
+        // Logic adjusted for clarity and direct alignment with the goals without fallbacks for undefined goals
+        switch (goal) {
+            case BUILD_MUSCLE -> {
+                return Arrays.asList(Day.CHEST, Day.BACK_AND_SHOULDERS, Day.LEGS, Day.ARMS_CORE);
+            }
+            case STRENGTH -> {
+                return Arrays.asList(Day.PUSH, Day.PULL, Day.LEGS);
+            }
+            case WEIGHT_LOSS -> {
+                return Arrays.asList(Day.UPPER_BODY, Day.LOWER_BODY);
+            }
+            default -> throw new IllegalArgumentException("Unexpected fitness goal: " + goal);
+        }
     }
 
     /**
@@ -97,14 +109,26 @@ public class WorkoutSessionService {
             case BACK_AND_SHOULDERS -> Set.of("Back", "Shoulders");
             case LEGS -> Set.of("Legs");
             case CHEST -> Set.of("Chest");
-            case LEGS_ARMS -> Set.of("Legs", "Arms");
+            case ARMS_CORE -> Set.of("Arms", "Core"); // For BUILD_MUSCLE, includes core exercises specifically on this day
+            case PUSH -> Set.of("Chest", "Shoulders", "Triceps"); // For STRENGTH, focusing on push exercises
+            case PULL -> Set.of("Back", "Biceps", "Forearms"); // For STRENGTH, focusing on pull exercises
             case UPPER_BODY -> goal == FitnessGoal.WEIGHT_LOSS ? Set.of("Cardio", "Upper Body") : Set.of("Back", "Chest", "Shoulders", "Arms");
             case LOWER_BODY -> Set.of("Legs", "Cardio");
         };
 
-        return exercises.stream()
-                .filter(e -> relevantBodyParts.contains(e.getBodyPart()) || (goal == FitnessGoal.WEIGHT_LOSS && e.getExerciseType() == ExerciseType.CARDIO))
+        List<Exercise> filteredExercises = exercises.stream()
+                .filter(e -> relevantBodyParts.contains(e.getBodyPart()))
                 .collect(Collectors.toList());
+
+        // For WEIGHT_LOSS, ensure at least one cardio exercise is included
+        if (goal == FitnessGoal.WEIGHT_LOSS && !day.equals(Day.UPPER_BODY) && !day.equals(Day.LOWER_BODY)) {
+            filteredExercises.addAll(exercises.stream()
+                    .filter(e -> e.getExerciseType() == ExerciseType.CARDIO)
+                    .limit(1) // Ensure only one cardio exercise is added if not already included based on day
+                    .collect(Collectors.toList()));
+        }
+
+        return filteredExercises;
     }
 
     /**

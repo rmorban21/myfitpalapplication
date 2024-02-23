@@ -1,24 +1,17 @@
 package com.decadev.services;
 
 import com.decadev.entities.Exercise;
+import com.decadev.enums.ExerciseType;
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-
+import static org.junit.jupiter.api.Assertions.*;
+import java.time.Duration;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest
 public class ExerciseServiceTest {
 
     @InjectMocks
@@ -27,70 +20,73 @@ public class ExerciseServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Initialize service with some mock data if necessary
-        exerciseService.init();
+        exerciseService.init(); // Manually call to simulate @PostConstruct
     }
 
     @Test
-    @DisplayName("Test Exercise Customization by Intensity")
-    void testCustomizeExerciseIntensity() {
-        Exercise exercise = new Exercise();
-        exercise = exerciseService.customizeExerciseIntensity(exercise, FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE);
-        assertNotNull(exercise.getReps());
-        // Add more assertions for different fitness levels and goals
-    }
+    void testGetCustomizedExercisesForUser_BuildMuscle_Advanced() {
+        // Test for BUILD_MUSCLE goal with ADVANCED fitness level
+        List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.ADVANCED, FitnessGoal.BUILD_MUSCLE);
 
-    @Test
-    @DisplayName("Test Getting Customized Exercises for User1")
-    void testGetCustomizedExercisesForUser_beginner_buildMuscle() {
-        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE);
-        assertFalse(exercises.isEmpty());
+        // Check for non-empty result
+        assertFalse(result.isEmpty(), "Result should not be empty");
 
-        // Printing out the exercises for debugging
-        System.out.println("Customized Exercises for User:");
-        exercises.forEach(exercise -> {
-            System.out.println("Name: " + exercise.getName() + ", Type: " + exercise.getExerciseType()
-                    + ", Body Part: " + exercise.getBodyPart() + ", Equipment: " + exercise.getEquipment()
-                    + ", Sets: " + exercise.getSets() + ", Reps: " + (exercise.getReps() != null ? exercise.getReps() : "N/A")
-                    + ", Duration: " + (exercise.getDuration() != null ? exercise.getDuration() : "N/A"));
-        });
+        // Ensure compound exercises are included
+        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.COMPOUND)), "Should include compound exercises");
+
+        // Ensure core exercises are included
+        assertTrue(result.stream().anyMatch(e -> e.getBodyPart().equalsIgnoreCase("Core")), "Should include core exercises");
+
+        // Ensure cardio exercises are excluded
+        assertFalse(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should not include cardio exercises");
 
     }
 
     @Test
-    @DisplayName("Test Getting Customized Exercises for User2")
-    void testGetCustomizedExercisesForUser_advanced_fullGymAccess_strength() {
-        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(FitnessLevel.ADVANCED, FitnessGoal.STRENGTH);
-        assertFalse(exercises.isEmpty());
+    void testGetCustomizedExercisesForUser_Strength_Beginner() {
+        // Test for STRENGTH goal with BEGINNER fitness level
+        List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.BEGINNER, FitnessGoal.STRENGTH);
 
-        // Printing out the exercises for debugging
-        System.out.println("Customized Exercises for User:");
-        exercises.forEach(exercise -> {
-            System.out.println("Name: " + exercise.getName() + ", Type: " + exercise.getExerciseType()
-                    + ", Body Part: " + exercise.getBodyPart() + ", Equipment: " + exercise.getEquipment()
-                    + ", Sets: " + exercise.getSets() + ", Reps: " + (exercise.getReps() != null ? exercise.getReps() : "N/A")
-                    + ", Duration: " + (exercise.getDuration() != null ? exercise.getDuration() : "N/A"));
-        });
+        // Check for non-empty result and 5x5 setup in strength exercises
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertTrue(result.stream().anyMatch(e -> e.getSets() == 5 && e.getReps() == 5), "Should include 5x5 strength exercises");
 
+        // Ensure cardio exercises are excluded
+        assertFalse(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should not include cardio exercises");
+
+        result.forEach(exercise -> System.out.println(exercise));
     }
 
     @Test
-    @DisplayName("Test Exercise Suitability for Fitness Level")
+    void testGetCustomizedExercisesForUser_WeightLoss_Intermediate() {
+        // Test for WEIGHT_LOSS goal with INTERMEDIATE fitness level
+        List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.INTERMEDIATE, FitnessGoal.WEIGHT_LOSS);
+
+        // Check for non-empty result and inclusion of cardio exercises
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should include cardio exercises");
+
+        // Ensure the correct mix of priority (compound) exercises and cardio
+        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.COMPOUND)), "Should include compound exercises");
+
+        result.forEach(exercise -> System.out.println(exercise));
+    }
+
+    // Test to ensure exercises are filtered correctly by fitness level
+    @Test
     void testIsExerciseSuitableForFitnessLevel() {
-        Exercise exercise = new Exercise();
-        exercise.setFitnessLevel(FitnessLevel.BEGINNER);
-        assertTrue(exerciseService.isExerciseSuitableForFitnessLevel(exercise, FitnessLevel.BEGINNER));
-        // Add more cases as needed
+        Exercise beginnerExercise = new Exercise("Test", FitnessLevel.BEGINNER, ExerciseType.ISOLATION, "Arms", "None", 3, 10, Duration.ofSeconds(0));
+        assertTrue(exerciseService.isExerciseSuitableForFitnessLevel(beginnerExercise, FitnessLevel.ADVANCED), "A beginner exercise should be suitable for an advanced user");
     }
 
+    // Test to ensure all exercises can be retrieved
     @Test
-    @DisplayName("Test Exercise Customization for Goal")
-    void testCustomizeExerciseForGoal() {
-        Exercise exercise = new Exercise();
-        exercise = exerciseService.customizeExerciseForGoal(exercise, FitnessGoal.WEIGHT_LOSS);
-        assertNotNull(exercise.getSets());
-        // Verify customization logic is applied correctly
+    void testGetAllExercises() {
+        List<Exercise> allExercises = exerciseService.getAllExercises();
+        assertNotNull(allExercises, "Exercise list should not be null");
+        assertFalse(allExercises.isEmpty(), "Exercise list should be populated");
+
+        allExercises.forEach(exercise -> System.out.println(exercise));
     }
 
-    // Add more tests as needed for all methods and edge cases
 }
