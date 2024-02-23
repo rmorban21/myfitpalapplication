@@ -16,6 +16,13 @@ import java.util.stream.Stream;
 @Service
 public class ExerciseService {
     private List<Exercise> exercises = new ArrayList<>();
+    //TODO: populate lists below with exercises for improved exercises
+  // private List <Exercise> priorityExercises = new ArrayList<>();
+  // private List <Exercise> accessoryExercises = new ArrayList<>();
+
+    //TODO: populate lists below with exercises with appropriate sets and reps for strength
+
+    // private List <Exercise> strengthExercises = new ArrayList<>();
 
     //TODO: possibility for additional exercises for broader range
     //TODO: Review of integration with WorkoutPlan and WorkoutSession via API endpoints that fetch exercises
@@ -100,7 +107,16 @@ public class ExerciseService {
         exercises.add(Exercise.builder().name("Dumbbell Lateral Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
         exercises.add(Exercise.builder().name("Dumbbell Front Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
         exercises.add(Exercise.builder().name("Dumbbell Rear Delt Raises").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.ISOLATION).bodyPart("Shoulders").equipment("Dumbbells").sets(3).reps(15).build());
+
+        //Arm Exercises
+        exercises.add(Exercise.builder().name("SkullCrusher").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Arms").equipment("Barbell").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Preacher Curls").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Arms").equipment("Barbell").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Tricep Overhead Extension").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Arms").equipment("Dumbbells").sets(3).reps(12).build());
+        exercises.add(Exercise.builder().name("Barbell Hammer Curls").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.COMPOUND).bodyPart("Arms").equipment("Dumbbells").sets(3).reps(12).build());
+
     }
+
+    //  implement logic for RPE based on fitness level -
 
 
     public boolean isEquipmentAccessible(GymAccess gymAccess, String equipment) {
@@ -114,7 +130,8 @@ public class ExerciseService {
             case FULL_GYM_ACCESS -> true;
         };
     }
-
+    // TODO: first 3 exercises are less  reps  and heavier weight (more intense) reps go up to maximum after third exercise
+    // TODO: Need to implement logic for determining first 3 primary exercises
     public Exercise customizeExerciseIntensity(Exercise exercise, FitnessLevel fitnessLevel, FitnessGoal fitnessGoal) {
         switch (fitnessGoal) {
             case BUILD_MUSCLE -> {
@@ -148,10 +165,28 @@ public class ExerciseService {
         return exercises.stream()
                 .filter(exercise -> isEquipmentAccessible(gymAccess, exercise.getEquipment()))
                 .filter(exercise -> isExerciseSuitableForFitnessLevel(exercise, fitnessLevel))
+                // Apply goal-specific filters for exercise types
+                .filter(exercise -> {
+                    switch (fitnessGoal) {
+                        case BUILD_MUSCLE:
+                            // For BUILD_MUSCLE, exclude cardio exercises
+                            return exercise.getExerciseType() != ExerciseType.CARDIO;
+                        case STRENGTH:
+                            // For STRENGTH, include only compound exercises
+                            return exercise.getExerciseType() == ExerciseType.COMPOUND;
+                        case WEIGHT_LOSS:
+                            // For WEIGHT_LOSS, include both cardio and compound exercises
+                            return exercise.getExerciseType() == ExerciseType.CARDIO || exercise.getExerciseType() == ExerciseType.COMPOUND;
+                        default:
+                            // No exercise type filtering for other goals
+                            return true;
+                    }
+                })
+                // For users with FULL_GYM_ACCESS and specific goals, exclude exercises with "None" equipment
+                .filter(exercise -> !(gymAccess == GymAccess.FULL_GYM_ACCESS && (fitnessGoal == FitnessGoal.BUILD_MUSCLE || fitnessGoal == FitnessGoal.STRENGTH || fitnessGoal == FitnessGoal.WEIGHT_LOSS) && exercise.getEquipment().equalsIgnoreCase("None")))
                 .map(exercise -> customizeExerciseForGoal(exercise, fitnessGoal))
                 .collect(Collectors.toList());
     }
-
 
     public boolean isExerciseSuitableForFitnessLevel(Exercise exercise, FitnessLevel userFitnessLevel) {
         // Your logic to filter exercises based on user fitness level

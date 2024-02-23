@@ -51,9 +51,26 @@ public class ExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("Test Getting Customized Exercises for User")
-    void testGetCustomizedExercisesForUser() {
+    @DisplayName("Test Getting Customized Exercises for User1")
+    void testGetCustomizedExercisesForUser_beginner_homeGymWithWeights_buildMuscle() {
         List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(GymAccess.HOME_GYM_WITH_WEIGHTS, FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE);
+        assertFalse(exercises.isEmpty());
+
+        // Printing out the exercises for debugging
+        System.out.println("Customized Exercises for User:");
+        exercises.forEach(exercise -> {
+            System.out.println("Name: " + exercise.getName() + ", Type: " + exercise.getExerciseType()
+                    + ", Body Part: " + exercise.getBodyPart() + ", Equipment: " + exercise.getEquipment()
+                    + ", Sets: " + exercise.getSets() + ", Reps: " + (exercise.getReps() != null ? exercise.getReps() : "N/A")
+                    + ", Duration: " + (exercise.getDuration() != null ? exercise.getDuration() : "N/A"));
+        });
+
+    }
+
+    @Test
+    @DisplayName("Test Getting Customized Exercises for User2")
+    void testGetCustomizedExercisesForUser_advanced_fullGymAccess_strength() {
+        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(GymAccess.FULL_GYM_ACCESS, FitnessLevel.ADVANCED, FitnessGoal.STRENGTH);
         assertFalse(exercises.isEmpty());
 
         // Printing out the exercises for debugging
