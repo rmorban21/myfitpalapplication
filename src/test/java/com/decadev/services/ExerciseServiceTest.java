@@ -27,7 +27,7 @@ public class ExerciseServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Initialize your service with some mock data if necessary
+        // Initialize service with some mock data if necessary
         exerciseService.init();
     }
 
