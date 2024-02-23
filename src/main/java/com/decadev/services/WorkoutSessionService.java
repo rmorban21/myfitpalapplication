@@ -28,8 +28,10 @@ public class WorkoutSessionService {
         this.exerciseService = exerciseService;
     }
 
-    //TODO: need to revist workout generation logic as this now creates different days but only populates the day with
-    // one relevant exercise and created only 2 workout sessions for a user with 5 hours of availability (beginner)
+    //TODO: make sure workoutsessions use existing exerciselist in model that prioritizes necessary lists and populates
+    // with exercises from specialized lists into exerciselist and in order (if possible)  -
+    //  worst case scenario is having workout sessions have all necessary lists
+    //  (priorityList, accessoryList with strengthList overriding priorities)
     /**
      * Generates workout sessions for a user based on their availability and fitness goals.
      * @param user the user for whom to generate workout sessions
