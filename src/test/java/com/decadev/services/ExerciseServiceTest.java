@@ -1,10 +1,8 @@
 package com.decadev.services;
 
 import com.decadev.entities.Exercise;
-import com.decadev.enums.ExerciseType;
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
-import com.decadev.enums.GymAccess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,14 +32,6 @@ public class ExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("Test Equipment Accessibility")
-    void testIsEquipmentAccessible() {
-        assertTrue(exerciseService.isEquipmentAccessible(GymAccess.FULL_GYM_ACCESS, "Barbell"));
-        assertFalse(exerciseService.isEquipmentAccessible(GymAccess.HOME_GYM_NO_WEIGHTS, "Dumbbells"));
-        // Add more assertions as needed
-    }
-
-    @Test
     @DisplayName("Test Exercise Customization by Intensity")
     void testCustomizeExerciseIntensity() {
         Exercise exercise = new Exercise();
@@ -52,8 +42,8 @@ public class ExerciseServiceTest {
 
     @Test
     @DisplayName("Test Getting Customized Exercises for User1")
-    void testGetCustomizedExercisesForUser_beginner_homeGymWithWeights_buildMuscle() {
-        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(GymAccess.HOME_GYM_WITH_WEIGHTS, FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE);
+    void testGetCustomizedExercisesForUser_beginner_buildMuscle() {
+        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE);
         assertFalse(exercises.isEmpty());
 
         // Printing out the exercises for debugging
@@ -70,7 +60,7 @@ public class ExerciseServiceTest {
     @Test
     @DisplayName("Test Getting Customized Exercises for User2")
     void testGetCustomizedExercisesForUser_advanced_fullGymAccess_strength() {
-        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(GymAccess.FULL_GYM_ACCESS, FitnessLevel.ADVANCED, FitnessGoal.STRENGTH);
+        List<Exercise> exercises = exerciseService.getCustomizedExercisesForUser(FitnessLevel.ADVANCED, FitnessGoal.STRENGTH);
         assertFalse(exercises.isEmpty());
 
         // Printing out the exercises for debugging

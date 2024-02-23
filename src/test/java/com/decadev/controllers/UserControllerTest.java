@@ -1,6 +1,5 @@
 package com.decadev.controllers;
 
-import com.decadev.enums.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
@@ -98,34 +97,5 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("User deleted successfully"));
     }
-
-    @Test
-    void updateGymAccess_Success() throws Exception {
-        String userId = "1";
-        GymAccess gymAccess = GymAccess.FULL_GYM_ACCESS;
-
-        doNothing().when(userService).updateGymAccess(eq(userId), any(GymAccess.class));
-
-        mockMvc.perform(put("/api/users/{userId}/gymAccess", userId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(gymAccess)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Gym access updated successfully"));
-    }
-
-    @Test
-    void updateGymAccess_UserNotFound() throws Exception {
-        String userId = "nonexistent";
-        GymAccess gymAccess = GymAccess.HOME_GYM_WITH_WEIGHTS;
-
-        doThrow(new UserNotFoundException("User not found")).when(userService).updateGymAccess(eq(userId), any(GymAccess.class));
-
-        mockMvc.perform(put("/api/users/{userId}/gymAccess", userId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(gymAccess)))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("User not found"));
-    }
-
 
 }

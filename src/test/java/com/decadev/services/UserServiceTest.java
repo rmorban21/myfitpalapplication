@@ -2,7 +2,6 @@ package com.decadev.services;
 
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
-import com.decadev.enums.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
@@ -112,23 +111,6 @@ class UserServiceTest {
     }
 
     @Test
-    void updateGymAccess_Success() throws UserNotFoundException {
-        // Setup
-        String userId = "1";
-        GymAccess gymAccess = GymAccess.FULL_GYM_ACCESS;
-        User user = new User(userId, "testUser", "password", "test@example.com");
-        user.setGymAccess(GymAccess.HOME_GYM_NO_WEIGHTS);
-        when(userRepository.findUserById(userId)).thenReturn(Optional.of(user));
-
-        // Execute
-        userService.updateGymAccess(userId, gymAccess);
-
-        // Verify
-        assertEquals(gymAccess, user.getGymAccess());
-        verify(userRepository).updateUser(user);
-    }
-
-    @Test
     void updateFitnessLevel_Success() throws UserNotFoundException {
         // Setup
         String userId = "1";
@@ -160,16 +142,6 @@ class UserServiceTest {
         // Verify
         assertEquals(fitnessGoal, user.getFitnessGoal());
         verify(userRepository).updateUser(user);
-    }
-
-    @Test
-    void updateGymAccess_UserNotFound() {
-        // Setup
-        String userId = "non-existent";
-        when(userRepository.findUserById(userId)).thenReturn(Optional.empty());
-
-        // Execute & Verify
-        assertThrows(UserNotFoundException.class, () -> userService.updateGymAccess(userId, GymAccess.FULL_GYM_ACCESS));
     }
 
     @Test

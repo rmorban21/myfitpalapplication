@@ -56,7 +56,7 @@ public class WorkoutSessionServiceTest {
         exercises.add(exercise);
 
         // Mock exerciseService to return exercises
-        when(exerciseService.getCustomizedExercisesForUser(GymAccess.HOME_GYM_WITH_WEIGHTS, FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE)).thenReturn(exercises);
+        when(exerciseService.getCustomizedExercisesForUser(FitnessLevel.BEGINNER, FitnessGoal.BUILD_MUSCLE)).thenReturn(exercises);
 
         // Calculate the expected number of workout sessions based on user's availability
         int expectedSessionCount = user.getAvailability();

@@ -41,7 +41,7 @@ public class WorkoutSessionService {
         List<Day> workoutDays = determineWorkoutDays(user.getFitnessGoal());
 
         // Fetch all customized exercises once to avoid multiple calls
-        List<Exercise> allCustomizedExercises = exerciseService.getCustomizedExercisesForUser(user.getGymAccess(), user.getFitnessLevel(), user.getFitnessGoal());
+        List<Exercise> allCustomizedExercises = exerciseService.getCustomizedExercisesForUser(user.getFitnessLevel(), user.getFitnessGoal());
 
         for (int i = 0; i < sessionsCount; i++) {
             Day day = workoutDays.get(i % workoutDays.size());

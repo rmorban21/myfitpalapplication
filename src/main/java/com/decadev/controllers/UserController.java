@@ -2,7 +2,6 @@ package com.decadev.controllers;
 
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
-import com.decadev.enums.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
@@ -72,17 +71,6 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok("User deleted successfully");
-    }
-    @PutMapping("/{userId}/gymAccess")
-    public ResponseEntity<String> updateGymAccess(@PathVariable String userId, @RequestBody GymAccess gymAccess) {
-        try {
-            userService.updateGymAccess(userId, gymAccess);
-            return ResponseEntity.ok("Gym access updated successfully");
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating gym access");
-        }
     }
 
     @PutMapping("/{userId}/fitnessLevel")

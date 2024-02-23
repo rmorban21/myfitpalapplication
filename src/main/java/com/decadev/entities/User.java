@@ -3,10 +3,8 @@ package com.decadev.entities;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.decadev.converters.FitnessGoalConverter;
 import com.decadev.converters.FitnessLevelConverter;
-import com.decadev.converters.GymAccessConverter;
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
-import com.decadev.enums.GymAccess;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -28,10 +26,6 @@ public class User {
 
     @DynamoDBAttribute(attributeName = "email")
     private String email;
-
-    @DynamoDBTypeConverted(converter = GymAccessConverter.class)
-    @DynamoDBAttribute(attributeName = "gymAccess")
-    private GymAccess gymAccess;
 
     @DynamoDBTypeConverted(converter = FitnessGoalConverter.class)
     @DynamoDBAttribute(attributeName = "fitnessGoal")
@@ -67,7 +61,6 @@ public class User {
         private String username;
         private String password;
         private String email;
-        private GymAccess gymAccess;
         private FitnessGoal fitnessGoal;
         private FitnessLevel fitnessLevel;
         private Integer availability;
@@ -96,11 +89,6 @@ public class User {
             return this;
         }
 
-        public UserBuilder gymAccess(GymAccess gymAccess) {
-            this.gymAccess = gymAccess;
-            return this;
-        }
-
         public UserBuilder fitnessGoal(FitnessGoal fitnessGoal) {
             this.fitnessGoal = fitnessGoal;
             return this;
@@ -118,7 +106,6 @@ public class User {
 
         public User build() {
             User user = new User(userId, username, password, email);
-            user.setGymAccess(gymAccess);
             user.setFitnessGoal(fitnessGoal);
             user.setFitnessLevel(fitnessLevel);
             user.setAvailability(availability);

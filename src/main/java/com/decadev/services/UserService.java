@@ -2,7 +2,6 @@ package com.decadev.services;
 
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
-import com.decadev.enums.GymAccess;
 import com.decadev.entities.User;
 import com.decadev.exceptions.UserAlreadyExistsException;
 import com.decadev.exceptions.UserNotFoundException;
@@ -57,12 +56,6 @@ public class UserService {
     }
 
     // TODO: Consider implementing a general approach to handling partial updates to reduce redundancy for below methods
-    public void updateGymAccess(String userId, GymAccess gymAccess) throws UserNotFoundException {
-        User user = userRepository.findUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
-        user.setGymAccess(gymAccess);
-        userRepository.updateUser(user);
-    }
 
     public void updateFitnessLevel(String userId, FitnessLevel fitnessLevel) throws UserNotFoundException {
         User user = userRepository.findUserById(userId)

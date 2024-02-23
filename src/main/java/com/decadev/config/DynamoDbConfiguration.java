@@ -10,7 +10,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.decadev.converters.FitnessGoalConverter;
 import com.decadev.converters.FitnessLevelConverter;
-import com.decadev.converters.GymAccessConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,9 +30,6 @@ public class DynamoDbConfiguration {
 
     @Autowired
     private FitnessLevelConverter fitnessLevelConverter;
-
-    @Autowired
-    private GymAccessConverter gymAccessConverter;
 
     @Bean
     public DynamoDBMapper dynamoDBMapper() {

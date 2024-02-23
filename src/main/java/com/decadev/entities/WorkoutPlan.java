@@ -3,10 +3,8 @@ package com.decadev.entities;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.decadev.converters.FitnessGoalConverter;
 import com.decadev.converters.FitnessLevelConverter;
-import com.decadev.converters.GymAccessConverter;
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
-import com.decadev.enums.GymAccess;
 import lombok.Data;
 
 import java.util.List;
@@ -31,10 +29,6 @@ public class WorkoutPlan {
     @DynamoDBTypeConverted(converter = FitnessLevelConverter.class)
     @DynamoDBAttribute(attributeName = "fitnessLevel")
     private FitnessLevel fitnessLevel;
-
-    @DynamoDBTypeConverted(converter = GymAccessConverter.class)
-    @DynamoDBAttribute(attributeName = "gymAccess")
-    private GymAccess gymAccess;
 
     @DynamoDBAttribute(attributeName = "availability")
     private Integer availability;

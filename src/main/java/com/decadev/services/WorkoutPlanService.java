@@ -49,7 +49,6 @@ public class WorkoutPlanService {
         workoutPlan.setWorkoutSessionIds(sessionIds);
         workoutPlan.setFitnessGoal(user.getFitnessGoal());
         workoutPlan.setFitnessLevel(user.getFitnessLevel());
-        workoutPlan.setGymAccess(user.getGymAccess());
         workoutPlan.setAvailability(user.getAvailability());
         workoutPlan.setGeneralAdvice(GENERAL_ADVICE);
 
