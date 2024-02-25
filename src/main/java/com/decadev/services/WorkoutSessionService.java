@@ -28,7 +28,7 @@ public class WorkoutSessionService {
         this.workoutSessionRepository = workoutSessionRepository;
         this.exerciseService = exerciseService;
     }
-
+//TODO: need to make sure corresponding days for goal are mapped for individual workoutsessions along with relevant exercises for body part with count limit for priority, strength, core and  cardio
     public List<WorkoutSession> generateWorkoutSessionsForUser(User user) {
         List<Exercise> customizedExercises = exerciseService.getCustomizedExercisesForUser(user.getFitnessLevel(), user.getFitnessGoal());
         Map<Day, List<Exercise>> dayToExercisesMap = mapSessionsToDays(customizedExercises, user.getFitnessGoal(), user.getFitnessLevel());
@@ -50,148 +50,49 @@ public class WorkoutSessionService {
     }
 
     private Map<Day, List<Exercise>> mapSessionsToDays(List<Exercise> exercises, FitnessGoal fitnessGoal, FitnessLevel fitnessLevel) {
-        // Implementation assumes Day enum values align with the fitness goal's workout focus
         Map<Day, List<Exercise>> dayToExercisesMap = new EnumMap<>(Day.class);
 
-        // Split exercises by type for more granular control
-        List<Exercise> priorityExercises = filterExercisesByType(exercises, ExerciseType.PRIORITY);
-        List<Exercise> strengthExercises = filterExercisesByType(exercises, ExerciseType.COMPOUND_STRENGTH);
-        List<Exercise> accessoryExercises = filterExercisesByType(exercises, ExerciseType.ACCESSORY);
-        List<Exercise> coreExercises = filterExercisesByType(exercises, ExerciseType.CORE);
-        List<Exercise> cardioExercises = filterExercisesByType(exercises, ExerciseType.CARDIO);
+        // Shuffle core and cardio exercises for variety
+        Collections.shuffle(filterExercisesByType(exercises, ExerciseType.CORE));
+        Collections.shuffle(filterExercisesByType(exercises, ExerciseType.CARDIO));
 
-        // Distribute exercises across days based on fitness goal and level
         for (Day day : Day.values()) {
             List<Exercise> dayExercises = new ArrayList<>();
 
-            // Logic to ensure the appropriate number of exercises based on day focus and user level
-            switch (day) {
-                case CHEST:
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 3, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 4, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    break;
-                case BACK_AND_SHOULDERS:
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 1, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    break;
-                case LEGS:
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 3, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.STRENGTH && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 3, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.STRENGTH && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    break;
+            // Unified counts for Beginner & Intermediate, and Advanced & Expert
+            int priorityCount = (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE) ? 3 : 4;
+            int accessoryCount = 4; // Consistent for all levels
+            int coreCount = (day == Day.ARMS_CORE || day == Day.UPPER_BODY || day == Day.LOWER_BODY) ? 2 : 1;
+            int cardioCount = (fitnessGoal == FitnessGoal.WEIGHT_LOSS) ? 1 : 0; // For WEIGHT_LOSS goal
 
-                case ARMS_CORE:
-                    if (fitnessGoal == FitnessGoal.BUILD_MUSCLE) {
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, null, 4, fitnessLevel, Optional.of(BodyPart.ARMS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 3, fitnessLevel, Optional.of(BodyPart.CORE)));
+            // Adjusting selection based on the fitness goal and day
+            switch (fitnessGoal) {
+                case BUILD_MUSCLE:
+                    // Specific body part targeting for BUILD_MUSCLE days
+                    if (day != Day.PUSH && day != Day.PULL) { // Exclude PUSH and PULL for BUILD_MUSCLE
+                        Optional<BodyPart> targetBodyPart = mapDayToBodyPart(day);
+                        dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.PRIORITY), filterExercisesByType(exercises, ExerciseType.ACCESSORY), priorityCount, fitnessLevel, targetBodyPart));
+                        if (day != Day.ARMS_CORE) { // Accessory exercises for non-ARMS_CORE days
+                            dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.ACCESSORY), null, accessoryCount, fitnessLevel, targetBodyPart));
+                        }
+                        // Core exercises for all BUILD_MUSCLE days
+                        dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.CORE), null, coreCount, fitnessLevel, Optional.empty()));
                     }
                     break;
-                case PUSH:
-                    if (fitnessGoal == FitnessGoal.STRENGTH && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 1, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.STRENGTH && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 2, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                case PULL:
-                    if (fitnessGoal == FitnessGoal.STRENGTH && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, accessoryExercises, 3, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
-                    }
-                    if (fitnessGoal == FitnessGoal.STRENGTH && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(strengthExercises, null, 4, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(accessoryExercises, null, 4, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CORE)));
+                case STRENGTH:
+                    // STRENGTH days involve full body, hence no specific body part targeting here
+                    if (day == Day.PUSH || day == Day.PULL || day == Day.LEGS) {
+                        dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.COMPOUND_STRENGTH), null, priorityCount, fitnessLevel, Optional.empty()));
+                        dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.ACCESSORY), null, accessoryCount, fitnessLevel, Optional.empty()));
+                        dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.CORE), null, coreCount, fitnessLevel, Optional.empty()));
                     }
                     break;
-                case UPPER_BODY: //Weight loss to add an extra priority exercise
-                    if (fitnessGoal == FitnessGoal.WEIGHT_LOSS && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 1, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 1, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 2, fitnessLevel, Optional.of(BodyPart.CORE)));
-                        dayExercises.addAll(selectExercisesForDay(cardioExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CARDIO)));
-                    }
-                    if (fitnessGoal == FitnessGoal.WEIGHT_LOSS && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.BACK)));
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 2, fitnessLevel, Optional.of(BodyPart.CHEST)));
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 1, fitnessLevel, Optional.of(BodyPart.SHOULDERS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 2, fitnessLevel, Optional.of(BodyPart.CORE)));
-                        dayExercises.addAll(selectExercisesForDay(cardioExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CARDIO)));
-                    }
-                    break;
-                case LOWER_BODY:
-                    if (fitnessGoal == FitnessGoal.WEIGHT_LOSS && (fitnessLevel == FitnessLevel.BEGINNER || fitnessLevel == FitnessLevel.INTERMEDIATE)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 3, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 2, fitnessLevel, Optional.of(BodyPart.CORE)));
-                        dayExercises.addAll(selectExercisesForDay(cardioExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CARDIO)));
-                    }
-                    if (fitnessGoal == FitnessGoal.WEIGHT_LOSS && (fitnessLevel == FitnessLevel.ADVANCED || fitnessLevel == FitnessLevel.EXPERT)) {
-                        Collections.shuffle(coreExercises);
-                        dayExercises.addAll(selectExercisesForDay(priorityExercises, accessoryExercises, 4, fitnessLevel, Optional.of(BodyPart.LEGS)));
-                        dayExercises.addAll(selectExercisesForDay(coreExercises, null, 2, fitnessLevel, Optional.of(BodyPart.CORE)));
-                        dayExercises.addAll(selectExercisesForDay(cardioExercises, null, 1, fitnessLevel, Optional.of(BodyPart.CARDIO)));
+                case WEIGHT_LOSS:
+                    // WEIGHT_LOSS days focus on cardio alongside priority exercises
+                    dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.PRIORITY), null, priorityCount++, fitnessLevel, mapDayToBodyPart(day)));
+                    dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.CORE), null, coreCount, fitnessLevel, Optional.empty()));
+                    if (cardioCount > 0) {
+                        dayExercises.addAll(selectExercisesForDay(filterExercisesByType(exercises, ExerciseType.CARDIO), null, cardioCount, fitnessLevel, Optional.empty()));
                     }
                     break;
             }
@@ -202,6 +103,21 @@ public class WorkoutSessionService {
         }
 
         return dayToExercisesMap;
+    }
+
+    private Optional<BodyPart> mapDayToBodyPart(Day day) {
+        switch (day) {
+            case CHEST: return Optional.of(BodyPart.CHEST);
+            case BACK_AND_SHOULDERS: return Optional.of(BodyPart.BACK, BodyPart.SHOULDERS); // Simplification, assumes BACK focus
+            case LEGS: return Optional.of(BodyPart.LEGS);
+            case ARMS_CORE: return Optional.of(BodyPart.ARMS);
+            case PULL: return Optional.of(BodyPart.BACK);
+            case PUSH: return Optional.of(BodyPart.CHEST && BodyPart.SHOULDERS);
+            case UPPER_BODY: return Optional.of(BodyPart.CHEST && BodyPart.BACK  && BodyPart.SHOULDERS);
+            case LOWER_BODY:
+            // Add mappings for other days if necessary
+            default: return Optional.empty();
+        }
     }
 
     private void rotateExercisesForVariety(Map<Day, List<Exercise>> dayToExercisesMap, List<Exercise> coreExercises, List<Exercise> cardioExercises, FitnessLevel fitnessLevel) {
@@ -258,23 +174,33 @@ public class WorkoutSessionService {
 
     private List<WorkoutSession> buildWorkoutSessions(Map<Day, List<Exercise>> dayToExercisesMap, User user) {
         List<WorkoutSession> sessions = new ArrayList<>();
-        int availableHours = user.getAvailability(); // Get the user's availability in hours
+        int availableHours = user.getAvailability();
 
-        // Limit the number of sessions based on the user's availability
-        dayToExercisesMap.entrySet().stream()
-                .limit(availableHours) // Use the user's availability to limit the number of days/sessions
-                .forEach(entry -> {
-                    Day day = entry.getKey();
-                    List<Exercise> exercises = entry.getValue();
+        // Calculate iterations needed to fill all available hours with the variety of workout days
+        int iterationsNeeded = (int) Math.ceil((double) availableHours / dayToExercisesMap.size());
+        List<Day> workoutDaysRepeated = new ArrayList<>();
 
-                    WorkoutSession session = new WorkoutSession();
-                    session.setSessionId(UUID.randomUUID().toString());
-                    session.setUserId(user.getUserId());
-                    session.setDay(day);
-                    session.setExercises(exercises);
-                    session.setSessionDuration(Duration.ofHours(1)); // Each session is 1 hour
-                    sessions.add(session);
-                });
+        // Repeat workout days to match availability
+        for (int i = 0; i < iterationsNeeded; i++) {
+            workoutDaysRepeated.addAll(dayToExercisesMap.keySet());
+        }
+
+        // Limit to the user's actual availability
+        workoutDaysRepeated = workoutDaysRepeated.subList(0, Math.min(workoutDaysRepeated.size(), availableHours));
+
+        System.out.println("Day Map Size: " + dayToExercisesMap.size());
+        System.out.println("User Availability: " + availableHours);
+
+        for (Day day : workoutDaysRepeated) {
+            List<Exercise> exercises = dayToExercisesMap.get(day);
+            WorkoutSession session = new WorkoutSession();
+            session.setSessionId(UUID.randomUUID().toString());
+            session.setUserId(user.getUserId());
+            session.setDay(day);
+            session.setExercises(exercises);
+            session.setSessionDuration(Duration.ofHours(1));
+            sessions.add(session);
+        }
 
         return sessions;
     }
