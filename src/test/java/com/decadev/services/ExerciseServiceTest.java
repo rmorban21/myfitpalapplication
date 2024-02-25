@@ -1,6 +1,7 @@
 package com.decadev.services;
 
 import com.decadev.entities.Exercise;
+import com.decadev.enums.BodyPart;
 import com.decadev.enums.ExerciseType;
 import com.decadev.enums.FitnessGoal;
 import com.decadev.enums.FitnessLevel;
@@ -25,21 +26,18 @@ public class ExerciseServiceTest {
 
     @Test
     void testGetCustomizedExercisesForUser_BuildMuscle_Advanced() {
-        // Test for BUILD_MUSCLE goal with ADVANCED fitness level
         List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.ADVANCED, FitnessGoal.BUILD_MUSCLE);
 
-        // Check for non-empty result
         assertFalse(result.isEmpty(), "Result should not be empty");
 
-        // Ensure compound exercises are included
-        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.COMPOUND)), "Should include compound exercises");
+        // Ensure PRIORITY and ACCESSORY exercises are included
+        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.PRIORITY) || e.getExerciseType().equals(ExerciseType.ACCESSORY)), "Should include priority and accessory exercises");
 
         // Ensure core exercises are included
-        assertTrue(result.stream().anyMatch(e -> e.getBodyPart().equalsIgnoreCase("Core")), "Should include core exercises");
+        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CORE)), "Should include core exercises");
 
         // Ensure cardio exercises are excluded
         assertFalse(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should not include cardio exercises");
-
     }
 
     @Test
@@ -53,8 +51,7 @@ public class ExerciseServiceTest {
 
         // Ensure cardio exercises are excluded
         assertFalse(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should not include cardio exercises");
-
-        result.forEach(exercise -> System.out.println(exercise));
+       // result.forEach(exercise -> System.out.println(exercise));
     }
 
     @Test
@@ -67,15 +64,16 @@ public class ExerciseServiceTest {
         assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should include cardio exercises");
 
         // Ensure the correct mix of priority (compound) exercises and cardio
-        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.COMPOUND)), "Should include compound exercises");
-
+        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.PRIORITY)), "Should include compound exercises");
         result.forEach(exercise -> System.out.println(exercise));
+
+
     }
 
     // Test to ensure exercises are filtered correctly by fitness level
     @Test
     void testIsExerciseSuitableForFitnessLevel() {
-        Exercise beginnerExercise = new Exercise("Test", FitnessLevel.BEGINNER, ExerciseType.ISOLATION, "Arms", "None", 3, 10, Duration.ofSeconds(0));
+        Exercise beginnerExercise = new Exercise("Test", FitnessLevel.BEGINNER, ExerciseType.ACCESSORY, BodyPart.ARMS, "None", 3, 10, Duration.ofSeconds(0));
         assertTrue(exerciseService.isExerciseSuitableForFitnessLevel(beginnerExercise, FitnessLevel.ADVANCED), "A beginner exercise should be suitable for an advanced user");
     }
 
@@ -86,7 +84,7 @@ public class ExerciseServiceTest {
         assertNotNull(allExercises, "Exercise list should not be null");
         assertFalse(allExercises.isEmpty(), "Exercise list should be populated");
 
-        allExercises.forEach(exercise -> System.out.println(exercise));
+       // allExercises.forEach(exercise -> System.out.println(exercise));
     }
 
 }

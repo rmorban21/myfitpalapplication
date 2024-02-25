@@ -1,5 +1,6 @@
 package com.decadev.entities;
 
+import com.decadev.enums.BodyPart;
 import com.decadev.enums.ExerciseType;
 import com.decadev.enums.FitnessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ public class Exercise {
     private String name;
     private FitnessLevel fitnessLevel;
     private ExerciseType exerciseType;
-    private String bodyPart;
+    private BodyPart bodyPart;
     private String equipment;
     private Integer sets;
     private Integer reps;
@@ -53,7 +54,7 @@ public class Exercise {
             return this;
         }
 
-        public ExerciseBuilder bodyPart(String bodyPart) {
+        public ExerciseBuilder bodyPart(BodyPart bodyPart) {
             exercise.bodyPart = bodyPart;
             return this;
         }
