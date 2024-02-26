@@ -121,7 +121,7 @@ public class ExerciseService {
         exercises.add(Exercise.builder().name("Incline Treadmill Walk/Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("Treadmill").duration(Duration.ofMinutes(15)).build());
 
     }
-
+    //TODO: need to revisit adding relevant number of exercises ,priority count + accessory count
     public List<Exercise> getExercisesForDay(FitnessLevel fitnessLevel, FitnessGoal fitnessGoal, Day day) {
         List<Exercise> dayExercises = new ArrayList<>(filterExercisesByLevelAndType(fitnessLevel, ExerciseType.CORE));
 

@@ -12,58 +12,36 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WorkoutSessionService {
-    @Autowired
-    private ExerciseService exerciseService;
 
-    @Autowired
+    private ExerciseService exerciseService;
     private WorkoutSessionRepository workoutSessionRepository;
 
 
-    // Constructor
-    public WorkoutSessionService(ExerciseService exerciseService) {
+    @Autowired
+    public WorkoutSessionService(ExerciseService exerciseService, WorkoutSessionRepository workoutSessionRepository) {
         this.exerciseService = exerciseService;
+        this.workoutSessionRepository = workoutSessionRepository;
     }
-
+//TODO: need to revisit adding relevant number of exercises ,priority count + accessory count
     public List<WorkoutSession> generateWorkoutSessionsForUser(User user) {
-        // Determine number of sessions from user's availability
-        int sessionsPerWeek = user.getAvailability(); // Assuming 1 session = 1 hour
-
-        // Map days to exercises based on user's fitness goal and level
-        Map<Day, List<Exercise>> exercisesForDays = mapExercisesToDays(user);
-
-        // Create and save sessions
+        int availability = Math.min(user.getAvailability(), 7); // Limit to 7 sessions max
         List<WorkoutSession> sessions = new ArrayList<>();
-        for (Map.Entry<Day, List<Exercise>> entry : exercisesForDays.entrySet()) {
+
+        for (int i = 0; i < availability; i++) {
+            Day day = Day.values()[i % Day.values().length]; // Rotate through the days
+            List<Exercise> exercisesForDay = exerciseService.getExercisesForDay(user.getFitnessLevel(), user.getFitnessGoal(), day);
+
             WorkoutSession session = new WorkoutSession();
             session.setUserId(user.getUserId());
-            session.setDay(entry.getKey());
-            session.setExercises(entry.getValue());
-            // Assuming each session is 1 hour for simplicity
-            session.setSessionDuration(Duration.ofHours(1));
+            session.setDay(day);
+            session.setExercises(exercisesForDay);
+            session.setSessionDuration(Duration.ofHours(1)); // Set the session duration to one hour
 
-            workoutSessionRepository.save(session); // Save session to DynamoDB
+            workoutSessionRepository.save(session);
             sessions.add(session);
         }
 
         return sessions;
-    }
-
-    private int calculateSessionsBasedOnAvailability(int availabilityHoursPerWeek) {
-        // Assuming 1 hour per session, this is straightforward. Adjust logic if sessions vary in length.
-        return availabilityHoursPerWeek;
-    }
-
-    private List<Day> getWorkoutDaysForGoal(FitnessGoal fitnessGoal) {
-        // Return a list of Day enums based on the fitness goal. This requires a mapping from goals to Day enums.
-        // This mapping could be hardcoded or configured externally.
-        return null;
-    }
-
-    private Map<Day, List<Exercise>> mapExercisesToDays(User user) {
-        // Logic to map exercises to days based on user's goal and level
-        // This involves filtering and selecting exercises from ExerciseService
-        // and organizing them by Day, taking into account the target body parts
-        return null;
     }
 
     /**
