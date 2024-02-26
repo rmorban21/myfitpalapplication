@@ -1,10 +1,7 @@
 package com.decadev.services;
 
 import com.decadev.entities.Exercise;
-import com.decadev.enums.BodyPart;
-import com.decadev.enums.ExerciseType;
-import com.decadev.enums.FitnessGoal;
-import com.decadev.enums.FitnessLevel;
+import com.decadev.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,66 +22,108 @@ public class ExerciseServiceTest {
     }
 
     @Test
-    void testGetCustomizedExercisesForUser_BuildMuscle_Advanced() {
-        List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.ADVANCED, FitnessGoal.BUILD_MUSCLE);
+    void testGetExercisesForDay_beginnerUserWithBuildMuscleGoalOnLegDay_Success() {
+        // Assuming the init method populates exercises suitable for LEGS day for BUILD_MUSCLE goal
+        FitnessGoal fitnessGoal = FitnessGoal.BUILD_MUSCLE;
+        FitnessLevel fitnessLevel = FitnessLevel.BEGINNER;
+        Day day = Day.LEGS;
 
-        assertFalse(result.isEmpty(), "Result should not be empty");
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
 
-        // Ensure PRIORITY and ACCESSORY exercises are included
-        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.PRIORITY) || e.getExerciseType().equals(ExerciseType.ACCESSORY)), "Should include priority and accessory exercises");
-
-        // Ensure core exercises are included
-        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CORE)), "Should include core exercises");
-
-        // Ensure cardio exercises are excluded
-        assertFalse(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should not include cardio exercises");
+        assertFalse(exercises.isEmpty(), "Exercises list should not be empty for a valid day and goal combination.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.LEGS), "Exercises should contain LEGS body part.");
+        exercises.forEach(exercise -> System.out.println(exercise));
     }
 
     @Test
-    void testGetCustomizedExercisesForUser_Strength_Beginner() {
-        // Test for STRENGTH goal with BEGINNER fitness level
-        List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.BEGINNER, FitnessGoal.STRENGTH);
+    void testGetExercisesForDay_advancedUserWithBuildMuscleGoalOnBackAndShouldersDay_Success() {
+        // Assuming the init method populates exercises suitable for LEGS day for BUILD_MUSCLE goal
+        FitnessGoal fitnessGoal = FitnessGoal.BUILD_MUSCLE;
+        FitnessLevel fitnessLevel = FitnessLevel.ADVANCED;
+        Day day = Day.BACK_AND_SHOULDERS;
 
-        // Check for non-empty result and 5x5 setup in strength exercises
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertTrue(result.stream().anyMatch(e -> e.getSets() == 5 && e.getReps() == 5), "Should include 5x5 strength exercises");
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
 
-        // Ensure cardio exercises are excluded
-        assertFalse(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should not include cardio exercises");
-       // result.forEach(exercise -> System.out.println(exercise));
+        assertFalse(exercises.isEmpty(), "Exercises list should not be empty for a valid day and goal combination.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.BACK), "Exercises should contain Back body part.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.SHOULDERS), "Exercises should contain Back body part.");
+        exercises.forEach(exercise -> System.out.println(exercise));
     }
 
     @Test
-    void testGetCustomizedExercisesForUser_WeightLoss_Intermediate() {
-        // Test for WEIGHT_LOSS goal with INTERMEDIATE fitness level
-        List<Exercise> result = exerciseService.getCustomizedExercisesForUser(FitnessLevel.INTERMEDIATE, FitnessGoal.WEIGHT_LOSS);
+    void testGetExercisesForDay_expertUserWithBuildMuscleGoalOnArmAndCoreDay_Success() {
+        // Assuming the init method populates exercises suitable for LEGS day for BUILD_MUSCLE goal
+        FitnessGoal fitnessGoal = FitnessGoal.BUILD_MUSCLE;
+        FitnessLevel fitnessLevel = FitnessLevel.EXPERT;
+        Day day = Day.ARMS_CORE;
 
-        // Check for non-empty result and inclusion of cardio exercises
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.CARDIO)), "Should include cardio exercises");
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
 
-        // Ensure the correct mix of priority (compound) exercises and cardio
-        assertTrue(result.stream().anyMatch(e -> e.getExerciseType().equals(ExerciseType.PRIORITY)), "Should include compound exercises");
-        result.forEach(exercise -> System.out.println(exercise));
-
-
+        assertFalse(exercises.isEmpty(), "Exercises list should not be empty for a valid day and goal combination.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.ARMS), "Exercises should contain Arms body part.");
+        exercises.forEach(exercise -> System.out.println(exercise));
     }
 
-    // Test to ensure exercises are filtered correctly by fitness level
     @Test
-    void testIsExerciseSuitableForFitnessLevel() {
-        Exercise beginnerExercise = new Exercise("Test", FitnessLevel.BEGINNER, ExerciseType.ACCESSORY, BodyPart.ARMS, "None", 3, 10, Duration.ofSeconds(0));
-        assertTrue(exerciseService.isExerciseSuitableForFitnessLevel(beginnerExercise, FitnessLevel.ADVANCED), "A beginner exercise should be suitable for an advanced user");
+    void testGetExercisesForDay_beginnerUserWithStrengthGoalOnPushDay_Success() {
+        // Assuming the init method populates exercises suitable for LEGS day for BUILD_MUSCLE goal
+        FitnessGoal fitnessGoal = FitnessGoal.STRENGTH;
+        FitnessLevel fitnessLevel = FitnessLevel.BEGINNER;
+        Day day = Day.PUSH;
+
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
+
+        assertFalse(exercises.isEmpty(), "Exercises list should not be empty for a valid day and goal combination.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.CHEST), "Exercises should contain Chest body part.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.SHOULDERS), "Exercises should contain Shoulders body part.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getExerciseType() == ExerciseType.COMPOUND_STRENGTH), "Exercises should contain Back body part.");
+        exercises.forEach(exercise -> System.out.println(exercise));
     }
 
-    // Test to ensure all exercises can be retrieved
     @Test
-    void testGetAllExercises() {
-        List<Exercise> allExercises = exerciseService.getAllExercises();
-        assertNotNull(allExercises, "Exercise list should not be null");
-        assertFalse(allExercises.isEmpty(), "Exercise list should be populated");
+    void testGetExercisesForDay_expertUserWithWeightLossGoalOnUpperBodyDay_Success() {
+        // Assuming the init method populates exercises suitable for LEGS day for BUILD_MUSCLE goal
+        FitnessGoal fitnessGoal = FitnessGoal.WEIGHT_LOSS;
+        FitnessLevel fitnessLevel = FitnessLevel.EXPERT;
+        Day day = Day.UPPER_BODY;
 
-       // allExercises.forEach(exercise -> System.out.println(exercise));
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
+
+        assertFalse(exercises.isEmpty(), "Exercises list should not be empty for a valid day and goal combination.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.CHEST), "Exercises should contain Chest body part.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.SHOULDERS), "Exercises should contain Shoulders body part.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.BACK), "Exercises should contain Back body part.");
+
+        exercises.forEach(exercise -> System.out.println(exercise));
     }
 
+    @Test
+    void testGetExercisesForDay_beginnerUserWithWeightLossGoalOnLowerBodyDay_Success() {
+        // Assuming the init method populates exercises suitable for LEGS day for BUILD_MUSCLE goal
+        FitnessGoal fitnessGoal = FitnessGoal.WEIGHT_LOSS;
+        FitnessLevel fitnessLevel = FitnessLevel.BEGINNER;
+        Day day = Day.LOWER_BODY;
+
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
+
+        assertFalse(exercises.isEmpty(), "Exercises list should not be empty for a valid day and goal combination.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.LEGS), "Exercises should contain Chest body part.");
+        assertTrue(exercises.stream().anyMatch(e -> e.getBodyPart() == BodyPart.CARDIO), "Exercises should contain Cardio body part.");
+
+        exercises.forEach(exercise -> System.out.println(exercise));
+    }
+
+
+    @Test
+    void testGetExercisesForDay_returnsEmptyList() {
+        // Assuming the service should not return BACK_AND_SHOULDERS exercises for a WEIGHT_LOSS goal
+        FitnessGoal fitnessGoal = FitnessGoal.WEIGHT_LOSS;
+        FitnessLevel fitnessLevel = FitnessLevel.BEGINNER;
+        Day day = Day.BACK_AND_SHOULDERS;
+
+        List<Exercise> exercises = exerciseService.getExercisesForDay(fitnessLevel, fitnessGoal, day);
+
+        assertTrue(exercises.isEmpty(), "Exercises list should be empty for a mismatched goal and day combination.");
+        exercises.forEach(exercise -> System.out.println(exercise));
+    }
 }
