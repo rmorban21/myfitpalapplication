@@ -8,6 +8,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.decadev.converters.ExerciseListConverter;
 import com.decadev.converters.FitnessGoalConverter;
 import com.decadev.converters.FitnessLevelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class DynamoDbConfiguration {
 
     @Autowired
     private FitnessLevelConverter fitnessLevelConverter;
+
+    @Autowired
+    private ExerciseListConverter  exerciseListConverter;
 
     @Bean
     public DynamoDBMapper dynamoDBMapper() {

@@ -36,8 +36,7 @@ class WorkoutSessionServiceTest {
         exercises = initExercises();
         List<Exercise> mockExercisesForDay = exercises.subList(0, 5); // Adjust as needed for the test
 
-        when(exerciseService.getExercisesForDay(any(FitnessLevel.class), any(FitnessGoal.class), any(Day.class)))
-                .thenReturn(mockExercisesForDay);
+
         // Assume the ExerciseService.getCustomizedExercisesForUser method will return this list for tests
       //  when(exerciseService.getCustomizedExercisesForUser(any(FitnessLevel.class), any(FitnessGoal.class))).thenReturn(exercises);
     }
@@ -45,16 +44,16 @@ class WorkoutSessionServiceTest {
     private List<Exercise> initExercises() {
         List<Exercise> exercises = new ArrayList<>();
 
-        exercises.add(Exercise.builder().name("Plank").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CORE).bodyPart(BodyPart.CORE).equipment("None").sets(3).duration(Duration.ofSeconds(60)).build());
+        exercises.add(Exercise.builder().name("Plank").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CORE).bodyPart(BodyPart.CORE).equipment("None").sets(3).duration("1min").build());
         exercises.add(Exercise.builder().name("Crunches").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CORE).bodyPart(BodyPart.CORE).equipment("None").sets(3).reps(15).build());
         exercises.add(Exercise.builder().name("Russian Twists").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CORE).bodyPart(BodyPart.CORE).equipment("None").sets(3).reps(12).build());
         exercises.add(Exercise.builder().name("Leg Raises").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CORE).bodyPart(BodyPart.CORE).equipment("None").sets(3).reps(10).build());
         exercises.add(Exercise.builder().name("Bicycle Crunches").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CORE).bodyPart(BodyPart.CORE).equipment("None").sets(3).reps(12).build());
 
         // Cardio Exercises
-        exercises.add(Exercise.builder().name("StairMaster").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("StairMaster").duration(Duration.ofMinutes(15)).build());
-        exercises.add(Exercise.builder().name("Low-Intensity Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("Treadmill").duration(Duration.ofMinutes(30)).build());
-        exercises.add(Exercise.builder().name("Incline Treadmill Walk/Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("Treadmill").duration(Duration.ofMinutes(15)).build());
+        exercises.add(Exercise.builder().name("StairMaster").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("StairMaster").duration("15min").build());
+        exercises.add(Exercise.builder().name("Low-Intensity Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("Treadmill").duration("30min").build());
+        exercises.add(Exercise.builder().name("Incline Treadmill Walk/Run").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.CARDIO).bodyPart(BodyPart.CARDIO).equipment("Treadmill").duration("15min").build());
 
         //Priority Leg Exercises
         exercises.add(Exercise.builder().name("Hack Squats").fitnessLevel(FitnessLevel.ADVANCED).exerciseType(ExerciseType.PRIORITY).bodyPart(BodyPart.LEGS).equipment("Hack Squat Machine").sets(3).reps(12).build());
@@ -71,7 +70,7 @@ class WorkoutSessionServiceTest {
         exercises.add(Exercise.builder().name("Lateral Lunges").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ACCESSORY).bodyPart(BodyPart.LEGS).equipment("None").sets(3).reps(10).build());
         exercises.add(Exercise.builder().name("Single-Leg Deadlifts").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ACCESSORY).bodyPart(BodyPart.LEGS).equipment("None").sets(3).reps(10).build());
         exercises.add(Exercise.builder().name("Body-weight Squats").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ACCESSORY).bodyPart(BodyPart.LEGS).equipment("None").sets(3).reps(10).build());
-        exercises.add(Exercise.builder().name("Wall Sits").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ACCESSORY).bodyPart(BodyPart.LEGS).equipment("None").duration(Duration.ofSeconds(60)).build());
+        exercises.add(Exercise.builder().name("Wall Sits").fitnessLevel(FitnessLevel.BEGINNER).exerciseType(ExerciseType.ACCESSORY).bodyPart(BodyPart.LEGS).equipment("None").duration("1min").build());
 
         // Priority Back Exercises
         exercises.add(Exercise.builder().name("Lat Pulldowns").fitnessLevel(FitnessLevel.INTERMEDIATE).exerciseType(ExerciseType.PRIORITY).bodyPart(BodyPart.BACK).equipment("Lat Pulldown Machine").sets(3).reps(12).build());
@@ -155,7 +154,8 @@ class WorkoutSessionServiceTest {
         when(user.getAvailability()).thenReturn(4); // User has 4 hours of availability
 
         // Assuming ExerciseService.getExercisesForDay() is called, return an empty list for simplicity
-        when(exerciseService.getExercisesForDay(any(), any(), any())).thenReturn(List.of());
+        when(exerciseService.getExercisesForDay(any(FitnessLevel.class), any(FitnessGoal.class), any(Day.class)))
+                .thenReturn(exercises);
 
         // Generate workout sessions
         List<WorkoutSession> sessions = workoutSessionService.generateWorkoutSessionsForUser(user);
@@ -171,5 +171,32 @@ class WorkoutSessionServiceTest {
         verify(workoutSessionRepository, times(4)).save(any(WorkoutSession.class));
 
         }
+
+    @Test
+    void testGenerateWorkoutSessionsForAdvancedUserWithWeightLossGoal() {
+        // Mock user
+        User user = mock(User.class);
+        when(user.getUserId()).thenReturn("userId123");
+        when(user.getFitnessLevel()).thenReturn(FitnessLevel.ADVANCED);
+        when(user.getFitnessGoal()).thenReturn(FitnessGoal.WEIGHT_LOSS);
+        when(user.getAvailability()).thenReturn(4); // User has 4 hours of availability
+
+        // Assuming ExerciseService.getExercisesForDay() is called, return an empty list for simplicity
+        when(exerciseService.getExercisesForDay(any(), any(), any())).thenReturn(List.of());
+
+        // Generate workout sessions
+        List<WorkoutSession> sessions = workoutSessionService.generateWorkoutSessionsForUser(user);
+
+        // Validate the sessions were created as expected
+        assert sessions.size() == 4 : "Expected 4 workout sessions";
+        sessions.forEach(session -> {
+            System.out.println("Session Day: " + session.getDay());
+            session.getExercises().forEach(exercise ->
+                    System.out.println("Exercise: " + exercise.getName() + ", Type: " + exercise.getExerciseType() + ", Body Part: " + exercise.getBodyPart()));
+        });
+        // Verify interactions
+        verify(workoutSessionRepository, times(4)).save(any(WorkoutSession.class));
+
+    }
 
 }

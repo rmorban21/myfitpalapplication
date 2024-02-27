@@ -4,10 +4,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import com.decadev.entities.Exercise;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 //TODO: Consider logging the exception details to aid in debugging
 // any potential issues with the conversion process.
+@Component
 public class ExerciseListConverter implements DynamoDBTypeConverter<String, List<Exercise>> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

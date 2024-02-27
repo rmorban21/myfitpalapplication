@@ -31,6 +31,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb
 	implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
+
+
 	// Additional testing dependencies
 	testImplementation 'org.mockito:mockito-core:4.0.0' // For Mockito core functionality
 	testImplementation 'org.mockito:mockito-junit-jupiter:4.0.0' // For Mockito with JUnit 5 support

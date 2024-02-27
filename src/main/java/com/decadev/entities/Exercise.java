@@ -18,7 +18,7 @@ public class Exercise {
     private String equipment;
     private Integer sets;
     private Integer reps;
-    private Duration duration;
+    private String duration;
 
     // Private constructor to prevent direct instantiation
     public Exercise() {}
@@ -74,7 +74,7 @@ public class Exercise {
             return this;
         }
 
-        public ExerciseBuilder duration(Duration duration) {
+        public ExerciseBuilder duration(String duration) {
             exercise.duration = duration;
             return this;
         }

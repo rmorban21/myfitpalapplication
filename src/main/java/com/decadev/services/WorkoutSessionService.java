@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Service
 public class WorkoutSessionService {
 
     private ExerciseService exerciseService;
@@ -23,19 +24,29 @@ public class WorkoutSessionService {
         this.workoutSessionRepository = workoutSessionRepository;
     }
 //TODO: need to revisit adding relevant number of exercises ,priority count + accessory count
+
     public List<WorkoutSession> generateWorkoutSessionsForUser(User user) {
         int availability = Math.min(user.getAvailability(), 7); // Limit to 7 sessions max
         List<WorkoutSession> sessions = new ArrayList<>();
 
+        List<Day> daysForGoal = new ArrayList<>();
+        if (user.getFitnessGoal() == FitnessGoal.WEIGHT_LOSS) {
+            daysForGoal = Arrays.asList(Day.UPPER_BODY, Day.LOWER_BODY); // Focus on upper and lower body for weight loss
+        } else if (user.getFitnessGoal() == FitnessGoal.BUILD_MUSCLE) {
+            daysForGoal = Arrays.asList(Day.BACK_AND_SHOULDERS, Day.CHEST, Day.ARMS_CORE, Day.LEGS);
+        } else if (user.getFitnessGoal() == FitnessGoal.STRENGTH) {
+            daysForGoal = Arrays.asList(Day.PUSH, Day.PULL,  Day.LEGS);
+        }
+
         for (int i = 0; i < availability; i++) {
-            Day day = Day.values()[i % Day.values().length]; // Rotate through the days
+            Day day = daysForGoal.get(i % daysForGoal.size()); // Use custom day list based on fitness goal
             List<Exercise> exercisesForDay = exerciseService.getExercisesForDay(user.getFitnessLevel(), user.getFitnessGoal(), day);
 
             WorkoutSession session = new WorkoutSession();
             session.setUserId(user.getUserId());
             session.setDay(day);
             session.setExercises(exercisesForDay);
-            session.setSessionDuration(Duration.ofHours(1)); // Set the session duration to one hour
+            session.setSessionDuration("1"); // Assume 1 hour for simplicity, adjust if needed
 
             workoutSessionRepository.save(session);
             sessions.add(session);
@@ -43,6 +54,7 @@ public class WorkoutSessionService {
 
         return sessions;
     }
+
 
     /**
      * Retrieves a workout session by its unique identifier.
