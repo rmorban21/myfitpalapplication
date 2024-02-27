@@ -1,3 +1,3 @@
-# SpringBootApiDogs
+# MyFitPalApplication
 
-to use this locally you will need to add your aws access key and secret key in to the application.properties file
+Fitness chatbot designed to seemlessly integrate fitness into busy people's lives by creating personalized workout plans based on a user's fitness level and fitness goals.
